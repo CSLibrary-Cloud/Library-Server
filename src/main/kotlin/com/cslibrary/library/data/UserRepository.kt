@@ -15,6 +15,6 @@ class UserRepository(
     private val userIdField: String = "userId"
 
     fun addUser(user: User): User {
-        return mongoTemplate.insert(user)
+        return mongoTemplate.save(user)
     }
 }
