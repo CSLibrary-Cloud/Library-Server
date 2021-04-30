@@ -15,7 +15,6 @@ class UserRepository(
     private val userIdField: String = "userId"
 
     fun addUser(user: User): User {
-        // Fake
-        return User()
+        return mongoTemplate.insert(user)
     }
 }
