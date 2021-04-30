@@ -15,7 +15,7 @@ class UserRepository(
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     // Field - TODO: Probably we can use Java/Kotlin Reflection to get this?
-    private val userStateField: String = "userStateField"
+    private val userStateField: String = "userState"
     private val userSeatNumberField: String = "reservedSeatNumber"
     private val userPhoneNumberField: String = "userPhoneNumber"
     private val userNameField: String = "userName"
@@ -41,6 +41,18 @@ class UserRepository(
         }
     }
 
+    private fun findAllByQuery(fieldName: String, fieldTargetValue: String): List<User> {
+        // Create MongoDB Query
+        val query: Query = Query().apply {
+            addCriteria(
+                Criteria.where(fieldName).`is`(fieldTargetValue)
+            )
+        }
+
+        // Find it
+        return mongoTemplate.find(query, User::class.java)
+    }
+
     fun addUser(user: User): User {
         return mongoTemplate.save(user)
     }
@@ -59,5 +71,9 @@ class UserRepository(
 
     fun findByReservedSeatNumber(reservedSeatNumber: Int): User {
         return findOneByQuery(userSeatNumberField, reservedSeatNumber.toString())
+    }
+
+    fun findAllByUserState(userState: UserState): List<User> {
+        return findAllByQuery(userStateField, userState.name)
     }
 }

@@ -29,7 +29,8 @@ class UserRepositoryTest {
         userPassword = "somewhatpassword?",
         userName = "KDR",
         userPhoneNumber = "010-xxxx-xxxx",
-        reservedSeatNumber = "2"
+        reservedSeatNumber = "2",
+        userState = UserState.start.name
     )
 
     // Check for equality
@@ -39,6 +40,7 @@ class UserRepositoryTest {
         assertThat(resultUser.userName).isEqualTo(mockUser.userName)
         assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
         assertThat(resultUser.reservedSeatNumber).isEqualTo(mockUser.reservedSeatNumber)
+        assertThat(resultUser.userState).isEqualTo(mockUser.userState)
     }
 
     @Before
@@ -171,5 +173,23 @@ class UserRepositoryTest {
 
         // Assert
         checkResultSameWithMockUser(resultUser)
+    }
+
+    @Test
+    fun is_findAllByUserState_throws_NullPointerException_no_user() {
+        val resultList: List<User> = userRepository.findAllByUserState(UserState.start)
+
+        assertThat(resultList.size).isEqualTo(0)
+    }
+
+    @Test
+    fun is_findAllByUserState_works_well() {
+        mongoTemplate.save(mockUser)
+
+        val resultList: List<User> = userRepository.findAllByUserState(UserState.start)
+
+        assertThat(resultList.size).isEqualTo(1)
+        val user: User = resultList[0]
+        checkResultSameWithMockUser(user)
     }
 }
