@@ -23,6 +23,22 @@ class UserRepositoryTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
+    // Mock User
+    private val mockUser: User = User(
+        userId = "team2",
+        userPassword = "somewhatpassword?",
+        userName = "KDR",
+        userPhoneNumber = "010-xxxx-xxxx"
+    )
+
+    // Check for equality
+    private val checkResultSameWithMockUser: ((User) -> Unit) = { resultUser ->
+        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
+        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
+        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
+        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+    }
+
     @Before
     @After
     fun init() {
@@ -32,21 +48,11 @@ class UserRepositoryTest {
 
     @Test
     fun is_addUser_works_well() {
-        val mockUser: User = User(
-            userId = "team2",
-            userPassword = "somewhatpassword?",
-            userName = "KDR",
-            userPhoneNumber = "010-xxxx-xxxx"
-        )
-
         // Do work
         val resultUser: User = userRepository.addUser(mockUser)
 
         // Assert
-        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
-        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
-        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
-        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+        checkResultSameWithMockUser(resultUser)
     }
 
     @Test
@@ -63,13 +69,6 @@ class UserRepositoryTest {
 
     @Test
     fun is_findByUserId_works_well() {
-        val mockUser: User = User(
-            userId = "team2",
-            userPassword = "somewhatpassword?",
-            userName = "KDR",
-            userPhoneNumber = "010-xxxx-xxxx"
-        )
-
         // Register user in db first
         mongoTemplate.save(mockUser)
 
@@ -82,10 +81,7 @@ class UserRepositoryTest {
         }
 
         // Assert
-        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
-        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
-        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
-        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+        checkResultSameWithMockUser(resultUser)
     }
 
     @Test
@@ -102,13 +98,6 @@ class UserRepositoryTest {
 
     @Test
     fun is_findByUserName_works_well() {
-        val mockUser: User = User(
-            userId = "team2",
-            userPassword = "somewhatpassword?",
-            userName = "KDR",
-            userPhoneNumber = "010-xxxx-xxxx"
-        )
-
         // Register user in db first
         mongoTemplate.save(mockUser)
 
@@ -121,10 +110,7 @@ class UserRepositoryTest {
         }
 
         // Assert
-        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
-        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
-        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
-        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+        checkResultSameWithMockUser(resultUser)
     }
 
     @Test
@@ -141,13 +127,6 @@ class UserRepositoryTest {
 
     @Test
     fun is_findByUserPhoneNumber_works_well() {
-        val mockUser: User = User(
-            userId = "team2",
-            userPassword = "somewhatpassword?",
-            userName = "KDR",
-            userPhoneNumber = "010-xxxx-xxxx"
-        )
-
         // Register user in db first
         mongoTemplate.save(mockUser)
 
@@ -160,9 +139,6 @@ class UserRepositoryTest {
         }
 
         // Assert
-        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
-        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
-        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
-        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+        checkResultSameWithMockUser(resultUser)
     }
 }
