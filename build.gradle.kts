@@ -49,7 +49,8 @@ tasks.jacocoTestCoverageVerification {
 			excludes = listOf(
 				"com.cslibrary.library.CsLibraryApplicationKt",
 				"com.cslibrary.library.data.User",
-				"com.cslibrary.library.data.User.*"
+				"com.cslibrary.library.data.User.*",
+				"com.cslibrary.library.data.dto.*"
 			)
 		}
 	}
