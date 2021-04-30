@@ -46,4 +46,14 @@ class UserRepository(
 
         return findOneByQuery(query)
     }
+
+    fun findByUserName(userName: String): User {
+        val query: Query = Query().apply {
+            addCriteria(
+                Criteria.where(userNameField).`is`(userName)
+            )
+        }
+
+        return findOneByQuery(query)
+    }
 }

@@ -87,4 +87,43 @@ class UserRepositoryTest {
         assertThat(resultUser.userName).isEqualTo(mockUser.userName)
         assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
     }
+
+    @Test
+    fun is_findByUserName_throws_NullPointerException_no_user() {
+        runCatching {
+            userRepository.findByUserName("somewhat_userid")
+        }.onSuccess {
+            fail("We haven't registered user, but it succeeds?")
+        }.onFailure {
+            println(it.stackTraceToString())
+            assertThat(it is NullPointerException).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun is_findByUserName_works_well() {
+        val mockUser: User = User(
+            userId = "team2",
+            userPassword = "somewhatpassword?",
+            userName = "KDR",
+            userPhoneNumber = "010-xxxx-xxxx"
+        )
+
+        // Register user in db first
+        mongoTemplate.save(mockUser)
+
+        // Get User
+        val resultUser: User = runCatching {
+            userRepository.findByUserName(mockUser.userName)
+        }.getOrElse {
+            println(it.stackTraceToString())
+            fail("We have registered mock user, but somehow finding user failed.")
+        }
+
+        // Assert
+        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
+        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
+        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
+        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+    }
 }
