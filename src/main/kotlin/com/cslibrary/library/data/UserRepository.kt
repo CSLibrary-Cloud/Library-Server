@@ -1,6 +1,8 @@
 package com.cslibrary.library.data
 
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -16,5 +18,17 @@ class UserRepository(
 
     fun addUser(user: User): User {
         return mongoTemplate.save(user)
+    }
+
+    fun findByUserId(userId: String): User {
+        val query: Query = Query().apply {
+            addCriteria(
+                Criteria.where(userIdField).`is`(userId)
+            )
+        }
+
+        return runCatching {
+            mongoTemplate.findOne(query, User::class.java)
+        }.getOrNull() ?: throw RuntimeException("Cannot find user id with $userId")
     }
 }
