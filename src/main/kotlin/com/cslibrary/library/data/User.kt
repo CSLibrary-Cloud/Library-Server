@@ -11,15 +11,15 @@ import java.util.stream.Collectors
 @Document(collection="user")
 data class User(
     @Id
-    var id: ObjectId,
-    var userId: String,
-    var userPassword: String,
-    var userName: String,
-    var userPhoneNumber: String,
-    var roles: Set<String>,
-    var leftTime: Long,
-    var reservedSeatNumber: String,
-    var userState: String
+    var id: ObjectId = ObjectId(),
+    var userId: String = "",
+    var userPassword: String = "",
+    var userName: String = "",
+    var userPhoneNumber: String = "",
+    var roles: Set<String> = setOf(),
+    var leftTime: Long = -1,
+    var reservedSeatNumber: String = "",
+    var userState: String = ""
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return roles.stream()
