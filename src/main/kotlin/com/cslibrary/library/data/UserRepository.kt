@@ -1,5 +1,7 @@
 package com.cslibrary.library.data
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Repository
 class UserRepository(
     private val mongoTemplate: MongoTemplate // DI Injection
 ) {
+    // Logger
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
     // Field - TODO: Probably we can use Java/Kotlin Reflection to get this?
     private val userStateField: String = "userStateField"
     private val userSeatNumberField: String = "userSeatNumber"
@@ -28,7 +33,11 @@ class UserRepository(
         }
 
         return runCatching {
-            mongoTemplate.findOne(query, User::class.java)
-        }.getOrNull() ?: throw RuntimeException("Cannot find user id with $userId")
+            mongoTemplate.findOne(query, User::class.java)!!
+        }.getOrElse {
+            logger.error("Error occurred when getting user data with $userId.")
+            logger.error(it.stackTraceToString())
+            throw it
+        }
     }
 }

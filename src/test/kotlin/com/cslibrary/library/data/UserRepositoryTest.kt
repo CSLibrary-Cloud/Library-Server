@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.test.context.junit4.SpringRunner
+import java.lang.NullPointerException
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -49,14 +50,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun is_findByUserId_throws_RuntimeException_no_user() {
+    fun is_findByUserId_throws_NullPointerException_no_user() {
         runCatching {
             userRepository.findByUserId("somewhat_userid")
         }.onSuccess {
             fail("We haven't registered user, but it succeeds?")
         }.onFailure {
-            assertThat(it is RuntimeException).isEqualTo(true)
-            assertThat(it.message).contains("Cannot find user id with")
+            println(it.stackTraceToString())
+            assertThat(it is NullPointerException).isEqualTo(true)
         }
     }
 
@@ -79,5 +80,11 @@ class UserRepositoryTest {
             println(it.stackTraceToString())
             fail("We have registered mock user, but somehow finding user failed.")
         }
+
+        // Assert
+        assertThat(resultUser.userId).isEqualTo(mockUser.userId)
+        assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
+        assertThat(resultUser.userName).isEqualTo(mockUser.userName)
+        assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
     }
 }
