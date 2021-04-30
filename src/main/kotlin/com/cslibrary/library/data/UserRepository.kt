@@ -52,4 +52,8 @@ class UserRepository(
     fun findByUserName(userName: String): User {
         return findOneByQuery(userNameField, userName)
     }
+
+    fun findByUserPhoneNumber(userPhoneNumber: String): User {
+        return findOneByQuery(userPhoneNumberField, userPhoneNumber)
+    }
 }
