@@ -16,11 +16,39 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	// Kotlin Related
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+
+	// Spring Related
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+	// Jackson ObjectMapper
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+	// H2 MemDB
+	implementation("com.h2database:h2")
+
+	// Embedded DB
+	implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+
+	// JWT Token
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
+	// Spring Annotation Processor
+	compileOnly("org.springframework.boot:spring-boot-configuration-processor")
+
+	// Test-Related
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation(kotlin("test-junit"))
+
 }
 
 tasks.withType<KotlinCompile> {
