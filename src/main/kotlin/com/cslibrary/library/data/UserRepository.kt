@@ -21,6 +21,18 @@ class UserRepository(
     private val userNameField: String = "userName"
     private val userIdField: String = "userId"
 
+    // For finding
+    private fun findOneByQuery(query: Query): User {
+        return runCatching {
+            mongoTemplate.findOne(query, User::class.java)!!
+        }.getOrElse {
+            logger.error("Error occurred when getting user data.")
+            logger.error("Query: $query")
+            logger.error("StackTrace: ${it.stackTraceToString()}")
+            throw it
+        }
+    }
+
     fun addUser(user: User): User {
         return mongoTemplate.save(user)
     }
@@ -32,12 +44,6 @@ class UserRepository(
             )
         }
 
-        return runCatching {
-            mongoTemplate.findOne(query, User::class.java)!!
-        }.getOrElse {
-            logger.error("Error occurred when getting user data with $userId.")
-            logger.error(it.stackTraceToString())
-            throw it
-        }
+        return findOneByQuery(query)
     }
 }
