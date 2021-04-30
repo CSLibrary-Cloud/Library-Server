@@ -28,7 +28,8 @@ class UserRepositoryTest {
         userId = "team2",
         userPassword = "somewhatpassword?",
         userName = "KDR",
-        userPhoneNumber = "010-xxxx-xxxx"
+        userPhoneNumber = "010-xxxx-xxxx",
+        reservedSeatNumber = "2"
     )
 
     // Check for equality
@@ -37,6 +38,7 @@ class UserRepositoryTest {
         assertThat(resultUser.userPassword).isEqualTo(mockUser.userPassword)
         assertThat(resultUser.userName).isEqualTo(mockUser.userName)
         assertThat(resultUser.userPhoneNumber).isEqualTo(mockUser.userPhoneNumber)
+        assertThat(resultUser.reservedSeatNumber).isEqualTo(mockUser.reservedSeatNumber)
     }
 
     @Before
@@ -133,6 +135,35 @@ class UserRepositoryTest {
         // Get User
         val resultUser: User = runCatching {
             userRepository.findByUserPhoneNumber(mockUser.userPhoneNumber)
+        }.getOrElse {
+            println(it.stackTraceToString())
+            fail("We have registered mock user, but somehow finding user failed.")
+        }
+
+        // Assert
+        checkResultSameWithMockUser(resultUser)
+    }
+
+    @Test
+    fun is_findByReservedSeatNumber_throws_NullPointerException_no_user() {
+        runCatching {
+            userRepository.findByReservedSeatNumber(12)
+        }.onSuccess {
+            fail("We haven't registered user, but it succeeds?")
+        }.onFailure {
+            println(it.stackTraceToString())
+            assertThat(it is NullPointerException).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun is_findByReservedSeatNumber_works_well() {
+        // Register user in db first
+        mongoTemplate.save(mockUser)
+
+        // Get User
+        val resultUser: User = runCatching {
+            userRepository.findByReservedSeatNumber(mockUser.reservedSeatNumber.toInt())
         }.getOrElse {
             println(it.stackTraceToString())
             fail("We have registered mock user, but somehow finding user failed.")

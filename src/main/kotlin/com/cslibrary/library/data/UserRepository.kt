@@ -16,7 +16,7 @@ class UserRepository(
 
     // Field - TODO: Probably we can use Java/Kotlin Reflection to get this?
     private val userStateField: String = "userStateField"
-    private val userSeatNumberField: String = "userSeatNumber"
+    private val userSeatNumberField: String = "reservedSeatNumber"
     private val userPhoneNumberField: String = "userPhoneNumber"
     private val userNameField: String = "userName"
     private val userIdField: String = "userId"
@@ -55,5 +55,9 @@ class UserRepository(
 
     fun findByUserPhoneNumber(userPhoneNumber: String): User {
         return findOneByQuery(userPhoneNumberField, userPhoneNumber)
+    }
+
+    fun findByReservedSeatNumber(reservedSeatNumber: Int): User {
+        return findOneByQuery(userSeatNumberField, reservedSeatNumber.toString())
     }
 }
