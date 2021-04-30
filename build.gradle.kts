@@ -118,5 +118,5 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	finalizedBy("jacocoTestReport")
-	useJUnitPlatform()
+	useJUnit()
 }
