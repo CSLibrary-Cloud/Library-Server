@@ -22,7 +22,15 @@ class UserRepository(
     private val userIdField: String = "userId"
 
     // For finding
-    private fun findOneByQuery(query: Query): User {
+    private fun findOneByQuery(fieldName: String, fieldTargetValue: String): User {
+        // Create MongoDB Query
+        val query: Query = Query().apply {
+            addCriteria(
+                Criteria.where(fieldName).`is`(fieldTargetValue)
+            )
+        }
+
+        // Find it
         return runCatching {
             mongoTemplate.findOne(query, User::class.java)!!
         }.getOrElse {
@@ -38,22 +46,10 @@ class UserRepository(
     }
 
     fun findByUserId(userId: String): User {
-        val query: Query = Query().apply {
-            addCriteria(
-                Criteria.where(userIdField).`is`(userId)
-            )
-        }
-
-        return findOneByQuery(query)
+        return findOneByQuery(userIdField, userId)
     }
 
     fun findByUserName(userName: String): User {
-        val query: Query = Query().apply {
-            addCriteria(
-                Criteria.where(userNameField).`is`(userName)
-            )
-        }
-
-        return findOneByQuery(query)
+        return findOneByQuery(userNameField, userName)
     }
 }
