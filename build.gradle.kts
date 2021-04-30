@@ -5,6 +5,48 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.4.32"
 	kotlin("plugin.spring") version "1.4.32"
+	id("jacoco")
+}
+
+jacoco {
+	toolVersion = "0.8.6"
+}
+
+tasks.jacocoTestReport {
+	reports {
+		html.isEnabled = true
+		xml.isEnabled = false
+		csv.isEnabled = true
+	}
+	finalizedBy("jacocoTestCoverageVerification")
+}
+
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = true
+			element = "CLASS"
+
+			limit {
+				counter = "BRANCH"
+				value = "COVEREDRATIO"
+				minimum = "0.80".toBigDecimal()
+			}
+
+			limit {
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				minimum = "0.80".toBigDecimal()
+			}
+
+			limit {
+				counter = "LINE"
+				value = "TOTALCOUNT"
+				maximum = "200".toBigDecimal()
+			}
+			excludes = listOf()
+		}
+	}
 }
 
 group = "com.cslibrary"
@@ -59,5 +101,6 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+	finalizedBy("jacocoTestReport")
 	useJUnitPlatform()
 }
