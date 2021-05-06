@@ -58,7 +58,7 @@ class UserControllerTest {
         assertThat(registerResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(registerResponse.hasBody()).isEqualTo(true)
         assertThat(registerResponse.body).isNotEqualTo(null)
-        assertThat(registerResponse.body!!.registeredId).isNotEqualTo(mockUserRegisterRequest.userId)
+        assertThat(registerResponse.body!!.registeredId).isEqualTo(mockUserRegisterRequest.userId)
     }
 
     @Test

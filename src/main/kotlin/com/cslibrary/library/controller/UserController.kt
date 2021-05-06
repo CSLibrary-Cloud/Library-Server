@@ -16,7 +16,7 @@ class UserController(
     private val userService: UserService
 ) {
     @PostMapping("/api/v1/user")
-    fun registerUser(registerRequest: RegisterRequest): ResponseEntity<RegisterResponse> {
+    fun registerUser(@RequestBody registerRequest: RegisterRequest): ResponseEntity<RegisterResponse> {
         val registerResponse: RegisterResponse = userService.registerUser(registerRequest)
         return ResponseEntity
             .status(HttpStatus.OK)
