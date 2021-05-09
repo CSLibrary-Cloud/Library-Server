@@ -1,6 +1,7 @@
 package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
+import com.cslibrary.library.data.dto.response.SeatResponse
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
@@ -14,4 +15,13 @@ class SeatService {
             userSeatInfo[i] = null
         }
     }
+
+    fun getAllSeats(): List<SeatResponse> = userSeatInfo.map {
+        SeatResponse(
+            seatNumber = it.key,
+            isUsing = checkValue(it.value)
+        )
+    }.toList()
+
+    private fun checkValue(user: User?): Boolean = (user != null)
 }
