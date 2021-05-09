@@ -26,6 +26,18 @@ jobs:
         run: |
           ./gradlew clean test --info --stacktrace
 
+      # Build Artifact
+      - name: Building Artifact
+        run: |
+          ./gradlew clean bootJar
+
+      # Upload Build Artifact
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ServerJarFile
+          path: build/libs/CS-Libray-0.0.1-SNAPSHOT.jar
+
   BuildWindows:
       # Name the Job
       name: Build on Windows
