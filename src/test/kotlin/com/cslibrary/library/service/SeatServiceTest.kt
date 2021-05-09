@@ -3,6 +3,7 @@ package com.cslibrary.library.service
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.response.SeatResponse
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -53,5 +54,27 @@ class SeatServiceTest {
         }
         val isUserPresent: Boolean = method.invoke(seatService, User()) as Boolean
         assertThat(isUserPresent).isEqualTo(true)
+    }
+
+    @Test
+    fun is_reserveSeat_works_well() {
+        val mockSeatNumber: Int = 10
+        val mockUser: User = User()
+        runCatching {
+            seatService.reserveSeat(mockUser, mockSeatNumber)
+        }.onFailure {
+            println(it.stackTraceToString())
+            fail("We don't have any data for seat, but reserving failed!")
+        }.onSuccess {
+            assertThat(it).isEqualTo(mockSeatNumber)
+        }
+
+        runCatching {
+            seatService.reserveSeat(mockUser, mockSeatNumber)
+        }.onSuccess {
+            fail("Seat is duplicated and succeed")
+        }.onFailure {
+            assertThat(it is IllegalStateException).isEqualTo(true)
+        }
     }
 }

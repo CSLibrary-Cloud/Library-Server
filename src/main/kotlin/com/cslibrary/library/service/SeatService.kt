@@ -23,5 +23,21 @@ class SeatService {
         )
     }.toList()
 
+    fun reserveSeat(user: User, reserveSeatNumber: Int): Int {
+        checkSeatOrElse(reserveSeatNumber) {
+            userSeatInfo[reserveSeatNumber] = user
+        }
+        return reserveSeatNumber
+    }
+
+    private fun checkSeatOrElse(userSeatNumber: Int, onSuccess: () -> Unit) {
+        if (userSeatInfo[userSeatNumber] != null) {
+            // Error
+            throw IllegalStateException("Username already exists!")
+        } else {
+            onSuccess()
+        }
+    }
+
     private fun checkValue(user: User?): Boolean = (user != null)
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomUserDetailService(private val userRepository: UserRepository) : UserDetailsService {
-    override fun loadUserByUsername(username: String): UserDetails {
-        return userRepository.findByUserName(username)
+    override fun loadUserByUsername(userId: String): UserDetails {
+        return userRepository.findByUserId(userId)
     }
 }
