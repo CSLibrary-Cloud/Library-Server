@@ -85,4 +85,13 @@ class SeatServiceTest {
             assertThat(it is IllegalStateException).isEqualTo(true)
         }
     }
+
+    @Test
+    fun is_changeSeat_works_well() {
+        val mockSeatNumber: Int = 10
+        val mockUser: User = User()
+        mockUser.reservedSeatNumber = seatService.reserveSeat(mockUser, mockSeatNumber).toString()
+
+        assertThat(seatService.changeSeat(mockUser, 11)).isEqualTo(11)
+    }
 }
