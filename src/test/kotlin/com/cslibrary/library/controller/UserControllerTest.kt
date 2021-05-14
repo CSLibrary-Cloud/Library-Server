@@ -4,9 +4,11 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
+import com.cslibrary.library.data.dto.request.SeatSelectRequest
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
+import com.cslibrary.library.data.dto.response.SeatSelectResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -123,5 +125,21 @@ class UserControllerTest {
         for (eachSeat in seatResponse.body!!) {
             assertThat(eachSeat.isUsing).isEqualTo(false)
         }
+    }
+
+    @Test
+    fun is_reserving_seat_works_well() {
+        val serverBaseUrl: String = "http://localhost:${port}/api/v1/seat"
+        val loginToken: String = getLoginToken()
+        val httpHeader: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", loginToken)
+        }
+
+        val seatSelectResponse: ResponseEntity<SeatSelectResponse> =
+            restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))
+
+        assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(seatSelectResponse.body).isNotEqualTo(null)
+        assertThat(seatSelectResponse.body!!.reservedSeatNumber).isEqualTo(5)
     }
 }
