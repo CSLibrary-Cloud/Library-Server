@@ -4,6 +4,8 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.response.SeatResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +19,12 @@ import java.lang.reflect.Method
 class SeatServiceTest {
     @Autowired
     private lateinit var seatService: SeatService
+
+    @Before
+    @After
+    fun initSeat() {
+        seatService.initSeats()
+    }
 
     @Test
     fun is_seat_initiate_correctly() {
