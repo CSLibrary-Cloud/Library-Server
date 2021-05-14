@@ -9,6 +9,7 @@ import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
 import com.cslibrary.library.data.dto.response.SeatSelectResponse
+import com.cslibrary.library.service.SeatService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -40,6 +41,9 @@ class UserControllerTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
+    @Autowired
+    private lateinit var seatService: SeatService
+
     private fun getLoginToken(): String {
         val serverBaseUrl: String = "http://localhost:${port}"
         val mockUser: User = RegisterRequest(
@@ -65,6 +69,7 @@ class UserControllerTest {
     @After
     fun destroy() {
         mongoTemplate.remove(Query(), User::class.java)
+        seatService.initSeats()
     }
 
     @Test
