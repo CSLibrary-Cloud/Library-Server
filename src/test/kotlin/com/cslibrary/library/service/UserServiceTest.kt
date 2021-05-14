@@ -3,6 +3,7 @@ package com.cslibrary.library.service
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
+import com.cslibrary.library.data.dto.request.SeatSelectRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.After
@@ -15,6 +16,7 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.test.context.junit4.SpringRunner
 import java.lang.NullPointerException
+import java.lang.reflect.Method
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -30,6 +32,20 @@ class UserServiceTest {
     @After
     fun initTest() {
         mongoTemplate.remove(Query(), User::class.java)
+    }
+
+    private fun initMockUser(): String {
+        // Before starting, add mock user first
+        val mockUserId: String = "KangDroid"
+        mongoTemplate.save(
+            User(
+                userId = mockUserId
+            )
+        )
+
+        return userService.loginUser(LoginRequest(
+            mockUserId, ""
+        )).userToken
     }
 
     @Test
@@ -138,5 +154,35 @@ class UserServiceTest {
             println(it.stackTraceToString())
             fail("All things are good, but it failed to login")
         }
+    }
+
+    @Test
+    fun is_findUserByToken_returns_user_well() {
+        val method: Method = UserService::class.java.getDeclaredMethod("findUserByToken", String::class.java).apply {
+            isAccessible = true
+        }
+        val targetToken: String = initMockUser()
+        val user: User = method.invoke(userService, targetToken) as User
+        assertThat(user.userId).isEqualTo("KangDroid")
+    }
+
+    @Test
+    fun is_findUserByToken_throws_exception() {
+        val method: Method = UserService::class.java.getDeclaredMethod("findUserByToken", String::class.java).apply {
+            isAccessible = true
+        }
+        runCatching {
+            val user: User = method.invoke(userService, "targetToken") as User
+        }.onSuccess {
+            fail("We do not have user info, but finding user succeed?")
+        }
+    }
+
+    @Test
+    fun is_userReserveSeat_works_well() {
+        val loginToken: String = initMockUser()
+        val userSeatNumber: Int = userService.userReserveSeat(SeatSelectRequest(10), loginToken)
+
+        assertThat(userSeatNumber).isEqualTo(10)
     }
 }

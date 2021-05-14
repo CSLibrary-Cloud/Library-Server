@@ -4,6 +4,7 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
+import com.cslibrary.library.data.dto.request.SeatSelectRequest
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.security.JWTTokenProvider
@@ -14,9 +15,20 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val jwtTokenProvider: JWTTokenProvider
+    private val jwtTokenProvider: JWTTokenProvider,
+    private val seatService: SeatService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
+    private fun findUserByToken(userToken: String): User {
+        val userName: String = jwtTokenProvider.getUserPk(userToken)
+        return runCatching {
+            userRepository.findByUserId(userName)
+        }.getOrElse {
+            logger.error("User is not found! UserName on token: $userName")
+            throw it
+        }
+    }
 
     private fun isUserAccountExists(userId: String) {
         runCatching {
@@ -61,5 +73,15 @@ class UserService(
         return LoginResponse(
             userToken = jwtTokenProvider.createToken(requestedUser.userId, requestedUser.roles.toList())
         )
+    }
+
+    fun userReserveSeat(seatSelectRequest: SeatSelectRequest, userToken: String): Int {
+        val user: User = findUserByToken(userToken).apply {
+            // Reserve and get Seat Number
+            this.reservedSeatNumber = seatService.reserveSeat(this, seatSelectRequest.seatNumber).toString()
+        }
+
+        // Since we have Object ID Field, template will replace[update] object on DB
+        return userRepository.addUser(user).reservedSeatNumber.toInt()
     }
 }
