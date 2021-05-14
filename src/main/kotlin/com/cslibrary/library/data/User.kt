@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
 
 enum class UserState {
-    `break`, exit, start
+    BREAK, EXIT, START
 }
 
 @Document(collection="user")
@@ -23,7 +23,7 @@ data class User(
     var roles: Set<String> = setOf(),
     var leftTime: Long = -1,
     var reservedSeatNumber: String = "",
-    var userState: String = ""
+    var userState: UserState = UserState.EXIT
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return roles.stream()

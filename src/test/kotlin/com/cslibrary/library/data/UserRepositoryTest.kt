@@ -30,7 +30,7 @@ class UserRepositoryTest {
         userName = "KDR",
         userPhoneNumber = "010-xxxx-xxxx",
         reservedSeatNumber = "2",
-        userState = UserState.start.name
+        userState = UserState.START
     )
 
     // Check for equality
@@ -177,7 +177,7 @@ class UserRepositoryTest {
 
     @Test
     fun is_findAllByUserState_throws_NullPointerException_no_user() {
-        val resultList: List<User> = userRepository.findAllByUserState(UserState.start)
+        val resultList: List<User> = userRepository.findAllByUserState(UserState.START)
 
         assertThat(resultList.size).isEqualTo(0)
     }
@@ -186,7 +186,7 @@ class UserRepositoryTest {
     fun is_findAllByUserState_works_well() {
         mongoTemplate.save(mockUser)
 
-        val resultList: List<User> = userRepository.findAllByUserState(UserState.start)
+        val resultList: List<User> = userRepository.findAllByUserState(UserState.START)
 
         assertThat(resultList.size).isEqualTo(1)
         val user: User = resultList[0]
