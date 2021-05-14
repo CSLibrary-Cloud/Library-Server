@@ -11,6 +11,7 @@ import com.cslibrary.library.security.JWTTokenProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class UserService(
@@ -79,9 +80,19 @@ class UserService(
         val user: User = findUserByToken(userToken).apply {
             // Reserve and get Seat Number
             this.reservedSeatNumber = seatService.reserveSeat(this, seatSelectRequest.seatNumber).toString()
+            initUserTimer(this)
         }
+
+        // TODO: on this request, client need to connect websocket and get its data
 
         // Since we have Object ID Field, template will replace[update] object on DB
         return userRepository.addUser(user).reservedSeatNumber.toInt()
+    }
+
+    private fun initUserTimer(user: User) {
+        val defaultLetTimer: Long = 60 * 60 * 3
+        user.startTime = Instant.now().epochSecond
+        user.endTime = user.startTime + defaultLetTimer
+        user.leftTime = user.endTime - Instant.now().epochSecond
     }
 }

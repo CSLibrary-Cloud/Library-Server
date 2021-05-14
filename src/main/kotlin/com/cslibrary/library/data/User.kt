@@ -21,7 +21,9 @@ data class User(
     var userName: String = "",
     var userPhoneNumber: String = "",
     var roles: Set<String> = setOf(),
+    var startTime: Long = -1,
     var leftTime: Long = -1,
+    var endTime: Long = -1,
     var reservedSeatNumber: String = "",
     var userState: UserState = UserState.EXIT
 ): UserDetails {
