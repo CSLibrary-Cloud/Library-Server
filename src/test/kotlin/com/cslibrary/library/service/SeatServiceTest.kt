@@ -92,7 +92,14 @@ class SeatServiceTest {
         val mockSeatNumber: Int = 10
         val mockUser: User = User()
         mockUser.reservedSeatNumber = seatService.reserveSeat(mockUser, mockSeatNumber).toString()
+        val result: Int = seatService.changeSeat(mockUser, 11)
 
-        assertThat(seatService.changeSeat(mockUser, 11)).isEqualTo(11)
+        val field: Field = SeatService::class.java.getDeclaredField("userSeatInfo").apply {
+            isAccessible = true
+        }
+        val initiatedHashMap: HashMap<Int, User?> = field.get(seatService) as HashMap<Int, User?>
+
+        assertThat(result).isEqualTo(11)
+        assertThat(initiatedHashMap[mockSeatNumber]).isEqualTo(null)
     }
 }
