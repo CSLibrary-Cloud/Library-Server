@@ -2,6 +2,7 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.response.SeatResponse
+import com.cslibrary.library.error.exception.ConflictException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.After
@@ -82,7 +83,7 @@ class SeatServiceTest {
         }.onSuccess {
             fail("Seat is duplicated and succeed")
         }.onFailure {
-            assertThat(it is IllegalStateException).isEqualTo(true)
+            assertThat(it is ConflictException).isEqualTo(true)
         }
     }
 

@@ -2,6 +2,7 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.response.SeatResponse
+import com.cslibrary.library.error.exception.ConflictException
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
@@ -41,7 +42,7 @@ class SeatService {
     private fun checkSeatOrElse(userSeatNumber: Int, onSuccess: () -> Unit) {
         if (userSeatInfo[userSeatNumber] != null) {
             // Error
-            throw IllegalStateException("Username already exists!")
+            throw ConflictException("Username already exists!")
         } else {
             onSuccess()
         }
