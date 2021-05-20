@@ -9,6 +9,7 @@ import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
 import com.cslibrary.library.data.dto.response.SeatSelectResponse
+import com.cslibrary.library.error.ErrorResponse
 import com.cslibrary.library.service.SeatService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
@@ -91,6 +92,26 @@ class UserControllerTest {
     }
 
     @Test
+    fun is_registerUser_throws_conflictException() {
+        val serverBaseUrl: String = "http://localhost:${port}"
+        val mockUserRegisterRequest: RegisterRequest = RegisterRequest(
+            userId = "kangdroid",
+            userPassword = "test",
+            userName = "testingname",
+            userPhoneNumber = "whatever"
+        )
+        userRepository.addUser(mockUserRegisterRequest.toUser())
+
+        val registerResponse: ResponseEntity<ErrorResponse> =
+            restTemplate.postForEntity("${serverBaseUrl}/api/v1/user", mockUserRegisterRequest)
+
+        assertThat(registerResponse.statusCode).isEqualTo(HttpStatus.CONFLICT)
+        assertThat(registerResponse.hasBody()).isEqualTo(true)
+        assertThat(registerResponse.body).isNotEqualTo(null)
+        assertThat(registerResponse.body!!.errorMessage).isNotEqualTo("")
+    }
+
+    @Test
     fun is_loginUserWorksWell() {
         val serverBaseUrl: String = "http://localhost:${port}"
         val mockUser: User = User(
@@ -111,6 +132,52 @@ class UserControllerTest {
         assertThat(loginResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(loginResponse.body).isNotEqualTo(null)
         assertThat(loginResponse.body!!.userToken).isNotEqualTo("")
+    }
+
+    @Test
+    fun is_loginUser_throws_404_no_id() {
+        val serverBaseUrl: String = "http://localhost:${port}"
+        val mockUser: RegisterRequest = RegisterRequest(
+            userId = "kangdroid",
+            userPassword = "test",
+            userName = "testingname",
+            userPhoneNumber = "whatever"
+        )
+        val mockLoginRequest: LoginRequest = LoginRequest(
+            userId = "mockUser.userId",
+            userPassword = mockUser.userPassword
+        )
+        userRepository.addUser(mockUser.toUser())
+
+        val loginResponse: ResponseEntity<ErrorResponse> =
+            restTemplate.postForEntity("${serverBaseUrl}/api/v1/login", mockLoginRequest)
+
+        assertThat(loginResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        assertThat(loginResponse.body).isNotEqualTo(null)
+        assertThat(loginResponse.body!!.errorMessage).isNotEqualTo("")
+    }
+
+    @Test
+    fun is_loginUser_throws_FORBIDDEN_wrong_password() {
+        val serverBaseUrl: String = "http://localhost:${port}"
+        val mockUser: RegisterRequest = RegisterRequest(
+            userId = "kangdroid",
+            userPassword = "test",
+            userName = "testingname",
+            userPhoneNumber = "whatever"
+        )
+        val mockLoginRequest: LoginRequest = LoginRequest(
+            userId = mockUser.userId,
+            userPassword = "mockUser.userPassword"
+        )
+        userRepository.addUser(mockUser.toUser())
+
+        val loginResponse: ResponseEntity<ErrorResponse> =
+            restTemplate.postForEntity("${serverBaseUrl}/api/v1/login", mockLoginRequest)
+
+        assertThat(loginResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
+        assertThat(loginResponse.body).isNotEqualTo(null)
+        assertThat(loginResponse.body!!.errorMessage).isNotEqualTo("")
     }
 
     @Test
@@ -146,5 +213,22 @@ class UserControllerTest {
         assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(seatSelectResponse.body).isNotEqualTo(null)
         assertThat(seatSelectResponse.body!!.reservedSeatNumber).isEqualTo(5)
+    }
+
+    @Test
+    fun is_reserving_seat_throws_CONFLICT_duplicated_user() {
+        val serverBaseUrl: String = "http://localhost:${port}/api/v1/seat"
+        val loginToken: String = getLoginToken()
+        val httpHeader: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", loginToken)
+        }
+        restTemplate.exchange<SeatSelectResponse>(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))
+
+        val seatSelectResponse: ResponseEntity<ErrorResponse> =
+            restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))
+
+        assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.CONFLICT)
+        assertThat(seatSelectResponse.body).isNotEqualTo(null)
+        assertThat(seatSelectResponse.body!!.errorMessage).isNotEqualTo("")
     }
 }

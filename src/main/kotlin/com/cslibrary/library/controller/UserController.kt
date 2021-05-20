@@ -20,6 +20,7 @@ class UserController(
     private val userService: UserService,
     private val seatService: SeatService
 ) {
+    // Throws: ConflictException when Duplicated UserID Exists
     @PostMapping("/api/v1/user")
     fun registerUser(@RequestBody registerRequest: RegisterRequest): ResponseEntity<RegisterResponse> {
         val registerResponse: RegisterResponse = userService.registerUser(registerRequest)
@@ -28,6 +29,8 @@ class UserController(
             .body(registerResponse)
     }
 
+    // Throws NotFoundException when id does not exists
+    // Throws ForbiddenException when password is incorrrect
     @PostMapping("/api/v1/login")
     fun loginUser(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         val loginResponse: LoginResponse = userService.loginUser(loginRequest)
@@ -44,6 +47,7 @@ class UserController(
             .body(seatResponse)
     }
 
+    // Throws ConflictException when duplicated id registered in seat service.
     @PostMapping("/api/v1/seat")
     fun reserveSeat(@RequestHeader header: HttpHeaders, @RequestBody userSeatSelectRequest: SeatSelectRequest): ResponseEntity<SeatSelectResponse> {
         val userToken: String = header["X-AUTH-TOKEN"]!![0]
