@@ -51,7 +51,8 @@ tasks.jacocoTestCoverageVerification {
 				"com.cslibrary.library.data.User",
 				"com.cslibrary.library.data.User.*",
 				"com.cslibrary.library.data.dto.*",
-				"com.cslibrary.library.security.*"
+				"com.cslibrary.library.security.*",
+				"com.cslibrary.library.error.*"
 			)
 		}
 	}
