@@ -1,5 +1,6 @@
 package com.cslibrary.library.data
 
+import com.cslibrary.library.error.exception.NotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.After
@@ -60,14 +61,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun is_findByUserId_throws_NullPointerException_no_user() {
+    fun is_findByUserId_throws_404_no_user() {
         runCatching {
             userRepository.findByUserId("somewhat_userid")
         }.onSuccess {
             fail("We haven't registered user, but it succeeds?")
         }.onFailure {
             println(it.stackTraceToString())
-            assertThat(it is NullPointerException).isEqualTo(true)
+            assertThat(it is NotFoundException).isEqualTo(true)
         }
     }
 
@@ -89,14 +90,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun is_findByUserName_throws_NullPointerException_no_user() {
+    fun is_findByUserName_throws_404_no_user() {
         runCatching {
             userRepository.findByUserName("somewhat_userid")
         }.onSuccess {
             fail("We haven't registered user, but it succeeds?")
         }.onFailure {
             println(it.stackTraceToString())
-            assertThat(it is NullPointerException).isEqualTo(true)
+            assertThat(it is NotFoundException).isEqualTo(true)
         }
     }
 
@@ -118,14 +119,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun is_findByUserPhoneNumber_throws_NullPointerException_no_user() {
+    fun is_findByUserPhoneNumber_throws_404_no_user() {
         runCatching {
             userRepository.findByUserPhoneNumber("somewhat_userid")
         }.onSuccess {
             fail("We haven't registered user, but it succeeds?")
         }.onFailure {
             println(it.stackTraceToString())
-            assertThat(it is NullPointerException).isEqualTo(true)
+            assertThat(it is NotFoundException).isEqualTo(true)
         }
     }
 
@@ -147,14 +148,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun is_findByReservedSeatNumber_throws_NullPointerException_no_user() {
+    fun is_findByReservedSeatNumber_throws_404_no_user() {
         runCatching {
             userRepository.findByReservedSeatNumber(12)
         }.onSuccess {
             fail("We haven't registered user, but it succeeds?")
         }.onFailure {
             println(it.stackTraceToString())
-            assertThat(it is NullPointerException).isEqualTo(true)
+            assertThat(it is NotFoundException).isEqualTo(true)
         }
     }
 

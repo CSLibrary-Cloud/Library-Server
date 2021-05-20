@@ -1,5 +1,6 @@
 package com.cslibrary.library.data
 
+import com.cslibrary.library.error.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -31,13 +32,10 @@ class UserRepository(
         }
 
         // Find it
-        return runCatching {
-            mongoTemplate.findOne(query, User::class.java)!!
-        }.getOrElse {
-            logger.error("Error occurred when getting user data.")
+        return mongoTemplate.findOne(query, User::class.java) ?: run {
+            logger.error("User Data is is not found!")
             logger.error("Query: $query")
-            logger.error("StackTrace: ${it.stackTraceToString()}")
-            throw it
+            throw NotFoundException("Userdata is not found!")
         }
     }
 
