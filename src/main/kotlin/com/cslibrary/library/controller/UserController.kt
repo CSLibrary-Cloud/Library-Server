@@ -1,9 +1,6 @@
 package com.cslibrary.library.controller
 
-import com.cslibrary.library.data.dto.request.LoginRequest
-import com.cslibrary.library.data.dto.request.RegisterRequest
-import com.cslibrary.library.data.dto.request.SeatSelectRequest
-import com.cslibrary.library.data.dto.request.StateChangeRequest
+import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
@@ -74,6 +71,14 @@ class UserController(
         val userToken: String = header["X-AUTH-TOKEN"]!![0]
         // Change State
         userService.userChangeState(stateChangeRequest, userToken)
+        return ResponseEntity
+            .noContent().build()
+    }
+
+    @PostMapping("/api/v1/report")
+    fun userReport(@RequestHeader header: HttpHeaders, @RequestBody userReportRequest: ReportRequest): ResponseEntity<Void> {
+        val userToken: String = header["X-AUTH-TOKEN"]!![0]
+        userService.userReport(userReportRequest, userToken)
         return ResponseEntity
             .noContent().build()
     }

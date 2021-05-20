@@ -3,10 +3,7 @@ package com.cslibrary.library.service
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.UserState
-import com.cslibrary.library.data.dto.request.LoginRequest
-import com.cslibrary.library.data.dto.request.RegisterRequest
-import com.cslibrary.library.data.dto.request.SeatSelectRequest
-import com.cslibrary.library.data.dto.request.StateChangeRequest
+import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.error.exception.ConflictException
@@ -117,6 +114,11 @@ class UserService(
                 throw NotFoundException("${stateChangeRequest.userState.toUpperCase()} is not found!")
             }
         }
+    }
+
+    fun userReport(reportRequest: ReportRequest, userToken: String) {
+        val user: User = findUserByToken(userToken)
+        // do stuff
     }
 
     private fun initUserTimer(user: User) {

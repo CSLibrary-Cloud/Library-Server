@@ -2,10 +2,7 @@ package com.cslibrary.library.controller
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
-import com.cslibrary.library.data.dto.request.LoginRequest
-import com.cslibrary.library.data.dto.request.RegisterRequest
-import com.cslibrary.library.data.dto.request.SeatSelectRequest
-import com.cslibrary.library.data.dto.request.StateChangeRequest
+import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
@@ -261,6 +258,20 @@ class UserControllerTest {
         }
         val changeStateResponse: ResponseEntity<Void> =
             restTemplate.exchange(serverBaseUrl, HttpMethod.PUT, HttpEntity<StateChangeRequest>(StateChangeRequest("break"), httpHeader))
+
+        assertThat(changeStateResponse.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+    }
+
+    @Test
+    fun is_userReport_works_well() {
+        val serverBaseUrl: String = "http://localhost:${port}/api/v1/report"
+        val loginToken: String = getLoginToken()
+        val httpHeader: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", loginToken)
+        }
+
+        val changeStateResponse: ResponseEntity<Void> =
+            restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<ReportRequest>(ReportRequest("break"), httpHeader))
 
         assertThat(changeStateResponse.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
     }
