@@ -7,6 +7,8 @@ import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
+import com.cslibrary.library.error.exception.ConflictException
+import com.cslibrary.library.error.exception.ForbiddenException
 import com.cslibrary.library.security.JWTTokenProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,7 +42,7 @@ class UserService(
         }.onSuccess {
             // Username Already Exists
             logger.error("UserID with $userId seems like already exists!")
-            throw IllegalStateException("Username $userId already exists!")
+            throw ConflictException("Username $userId already exists!")
         }
     }
 
@@ -59,16 +61,10 @@ class UserService(
     }
 
     fun loginUser(loginRequest: LoginRequest): LoginResponse {
-        val requestedUser: User = runCatching {
-            userRepository.findByUserId(loginRequest.userId)
-        }.getOrElse {
-            logger.error("Cannot find user with user id ${loginRequest.userId}")
-            logger.error("StackTrace captured on loginUser: ${it.stackTraceToString()}")
-            throw it
-        }
+        val requestedUser: User = userRepository.findByUserId(loginRequest.userId)
 
         if (requestedUser.userPassword != loginRequest.userPassword) {
-            throw IllegalArgumentException("Password is wrong!")
+            throw ForbiddenException("Password is wrong!")
         }
 
         return LoginResponse(

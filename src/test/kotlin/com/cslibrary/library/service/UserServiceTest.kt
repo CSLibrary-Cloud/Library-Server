@@ -4,6 +4,9 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
+import com.cslibrary.library.error.exception.ConflictException
+import com.cslibrary.library.error.exception.ForbiddenException
+import com.cslibrary.library.error.exception.NotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.After
@@ -49,7 +52,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun is_registerUser_throws_IllegalStateException_duplicated_id() {
+    fun is_registerUser_throws_ConflictException_duplicated_id() {
         // Before starting, add mock user first
         val mockUserId: String = "KangDroid"
         mongoTemplate.save(
@@ -66,7 +69,7 @@ class UserServiceTest {
             fail("We have registered duplicated ID and it succeed?")
         }.onFailure {
             val userList: List<User> = mongoTemplate.findAll(User::class.java)
-            assertThat(it is IllegalStateException).isEqualTo(true)
+            assertThat(it is ConflictException).isEqualTo(true)
             assertThat(userList.size).isEqualTo(1)
         }
     }
@@ -91,7 +94,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun is_loginUser_throws_NullPointerException_no_user() {
+    fun is_loginUser_throws_NotFoundException_no_user() {
         val mockUserId: String = "KangDroid"
 
         runCatching {
@@ -104,7 +107,7 @@ class UserServiceTest {
             fail("We do not have user called $mockUserId and it succeeds to login?")
         }.onFailure {
             println(it.stackTraceToString())
-            assertThat(it is NullPointerException).isEqualTo(true)
+            assertThat(it is NotFoundException).isEqualTo(true)
         }
     }
 
@@ -128,7 +131,7 @@ class UserServiceTest {
             fail("Password should be wrong, but succeeds?")
         }.onFailure {
             println(it.stackTraceToString())
-            assertThat(it is IllegalArgumentException).isEqualTo(true)
+            assertThat(it is ForbiddenException).isEqualTo(true)
             assertThat(it.message).isEqualTo("Password is wrong!")
         }
     }
