@@ -4,6 +4,7 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
+import com.cslibrary.library.data.dto.request.StateChangeRequest
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
 import com.cslibrary.library.error.exception.NotFoundException
@@ -20,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.test.context.junit4.SpringRunner
 import java.lang.NullPointerException
 import java.lang.reflect.Method
+import kotlin.test.fail
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -199,5 +201,31 @@ class UserServiceTest {
         val changedSeatNumber: Int = userService.userChangeSeat(SeatSelectRequest(newSeat), loginToken)
         assertThat(changedSeatNumber).isNotEqualTo(oldSeat)
         assertThat(changedSeatNumber).isEqualTo(newSeat)
+    }
+
+    /**
+     * Tmp Test for now
+     */
+    @Test
+    fun is_userChangeState_works_well() {
+        val loginToken: String = initMockUser()
+        userService.userChangeState(StateChangeRequest("break"), loginToken)
+        userService.userChangeState(StateChangeRequest("start"), loginToken)
+        userService.userChangeState(StateChangeRequest("exit"), loginToken)
+    }
+
+    /**
+     * Tmp Test for now
+     */
+    @Test
+    fun is_userChangeState_throws_404() {
+        val loginToken: String = initMockUser()
+        runCatching {
+            userService.userChangeState(StateChangeRequest("??"), loginToken)
+        }.onSuccess {
+            fail("This should not be passed since unknown userstate detected.")
+        }.onFailure {
+            assertThat(it is NotFoundException).isEqualTo(true)
+        }
     }
 }

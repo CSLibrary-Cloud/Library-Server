@@ -3,6 +3,7 @@ package com.cslibrary.library.controller
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
+import com.cslibrary.library.data.dto.request.StateChangeRequest
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
@@ -66,5 +67,14 @@ class UserController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(SeatSelectResponse(changedSeat))
+    }
+
+    @PutMapping("/api/v1/state")
+    fun changeState(@RequestHeader header: HttpHeaders, @RequestBody stateChangeRequest: StateChangeRequest): ResponseEntity<Void> {
+        val userToken: String = header["X-AUTH-TOKEN"]!![0]
+        // Change State
+        userService.userChangeState(stateChangeRequest, userToken)
+        return ResponseEntity
+            .noContent().build()
     }
 }

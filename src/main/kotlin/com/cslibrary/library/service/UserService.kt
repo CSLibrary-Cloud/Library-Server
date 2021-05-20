@@ -2,13 +2,16 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
+import com.cslibrary.library.data.UserState
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
+import com.cslibrary.library.data.dto.request.StateChangeRequest
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
+import com.cslibrary.library.error.exception.NotFoundException
 import com.cslibrary.library.security.JWTTokenProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -91,6 +94,29 @@ class UserService(
         }
 
         return userRepository.addUser(user).reservedSeatNumber.toInt()
+    }
+
+    fun userChangeState(stateChangeRequest: StateChangeRequest, userToken: String) {
+        val user: User = findUserByToken(userToken)
+        /**
+         * We need to notify realtime server to stop timer, and save remaining time to DB & its new state
+         */
+        when (stateChangeRequest.userState.toUpperCase()) {
+            UserState.BREAK.name -> {
+                // Stop timer
+                // If an hour passed - make them 'exit'
+            }
+            UserState.EXIT.name -> {
+                // Stop timer
+                // Null-fy current seat
+            }
+            UserState.START.name -> {
+                // Restart Timer
+            }
+            else -> {
+                throw NotFoundException("${stateChangeRequest.userState.toUpperCase()} is not found!")
+            }
+        }
     }
 
     private fun initUserTimer(user: User) {

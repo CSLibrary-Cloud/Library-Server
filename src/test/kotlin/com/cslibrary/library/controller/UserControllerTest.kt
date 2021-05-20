@@ -5,6 +5,7 @@ import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
+import com.cslibrary.library.data.dto.request.StateChangeRequest
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
 import com.cslibrary.library.data.dto.response.SeatResponse
@@ -249,5 +250,18 @@ class UserControllerTest {
         assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(seatSelectResponse.hasBody()).isEqualTo(true)
         assertThat(seatSelectResponse.body!!.reservedSeatNumber).isEqualTo(10)
+    }
+
+    @Test
+    fun is_changeState_works_well() {
+        val serverBaseUrl: String = "http://localhost:${port}/api/v1/state"
+        val loginToken: String = getLoginToken()
+        val httpHeader: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", loginToken)
+        }
+        val changeStateResponse: ResponseEntity<Void> =
+            restTemplate.exchange(serverBaseUrl, HttpMethod.PUT, HttpEntity<StateChangeRequest>(StateChangeRequest("break"), httpHeader))
+
+        assertThat(changeStateResponse.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
     }
 }
