@@ -85,6 +85,14 @@ class UserService(
         return userRepository.addUser(user).reservedSeatNumber.toInt()
     }
 
+    fun userChangeSeat(seatSelectRequest: SeatSelectRequest, userToken: String): Int {
+        val user: User = findUserByToken(userToken).apply {
+            this.reservedSeatNumber = seatService.changeSeat(this, seatSelectRequest.seatNumber).toString()
+        }
+
+        return userRepository.addUser(user).reservedSeatNumber.toInt()
+    }
+
     private fun initUserTimer(user: User) {
         val defaultLetTimer: Long = 60 * 60 * 3
         user.startTime = Instant.now().epochSecond

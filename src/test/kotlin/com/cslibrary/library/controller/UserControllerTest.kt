@@ -231,4 +231,23 @@ class UserControllerTest {
         assertThat(seatSelectResponse.body).isNotEqualTo(null)
         assertThat(seatSelectResponse.body!!.errorMessage).isNotEqualTo("")
     }
+
+    @Test
+    fun is_changeSeat_works_well() {
+        val serverBaseUrl: String = "http://localhost:${port}/api/v1/seat"
+        val loginToken: String = getLoginToken()
+        val httpHeader: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", loginToken)
+        }
+
+        var seatSelectResponse: ResponseEntity<SeatSelectResponse> =
+            restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(20), httpHeader))
+
+        assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.OK)
+        seatSelectResponse =
+            restTemplate.exchange(serverBaseUrl, HttpMethod.PUT, HttpEntity<SeatSelectRequest>(SeatSelectRequest(10), httpHeader))
+        assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(seatSelectResponse.hasBody()).isEqualTo(true)
+        assertThat(seatSelectResponse.body!!.reservedSeatNumber).isEqualTo(10)
+    }
 }

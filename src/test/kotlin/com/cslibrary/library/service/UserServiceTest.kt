@@ -188,4 +188,16 @@ class UserServiceTest {
 
         assertThat(userSeatNumber).isEqualTo(10)
     }
+
+    @Test
+    fun is_userChangeSeat_works_well() {
+        val oldSeat: Int = 10
+        val newSeat: Int = 20
+        val loginToken: String = initMockUser()
+        userService.userReserveSeat(SeatSelectRequest(oldSeat), loginToken)
+
+        val changedSeatNumber: Int = userService.userChangeSeat(SeatSelectRequest(newSeat), loginToken)
+        assertThat(changedSeatNumber).isNotEqualTo(oldSeat)
+        assertThat(changedSeatNumber).isEqualTo(newSeat)
+    }
 }

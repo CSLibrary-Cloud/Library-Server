@@ -57,4 +57,14 @@ class UserController(
             .status(HttpStatus.OK)
             .body(SeatSelectResponse(registeredSeat))
     }
+
+    @PutMapping("/api/v1/seat")
+    fun changeSeat(@RequestHeader header: HttpHeaders, @RequestBody userSeatSelectRequest: SeatSelectRequest): ResponseEntity<SeatSelectResponse> {
+        val userToken: String = (header["X-AUTH-TOKEN"] ?: listOf(""))[0]
+        val changedSeat: Int = userService.userChangeSeat(userSeatSelectRequest, userToken)
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(SeatSelectResponse(changedSeat))
+    }
 }
