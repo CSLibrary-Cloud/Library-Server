@@ -1,10 +1,8 @@
 package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
-import com.cslibrary.library.data.dto.request.LoginRequest
-import com.cslibrary.library.data.dto.request.RegisterRequest
-import com.cslibrary.library.data.dto.request.SeatSelectRequest
-import com.cslibrary.library.data.dto.request.StateChangeRequest
+import com.cslibrary.library.data.UserRepository
+import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
@@ -33,6 +31,9 @@ class UserServiceTest {
 
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
     @Before
     @After
@@ -202,6 +203,20 @@ class UserServiceTest {
         val changedSeatNumber: Int = userService.userChangeSeat(SeatSelectRequest(newSeat), loginToken)
         assertThat(changedSeatNumber).isNotEqualTo(oldSeat)
         assertThat(changedSeatNumber).isEqualTo(newSeat)
+    }
+
+    @Test
+    fun is_userSaveLeftTime_works_well() {
+        val loginToken: String = initMockUser()
+        // Reserve Seat First
+        userService.userReserveSeat(SeatSelectRequest(10), loginToken)
+
+        // Do
+        userService.userSaveLeftTime(loginToken, SaveLeftTime(5000))
+
+        // Find
+        val user: User = userRepository.findByUserId("KangDroid")
+        assertThat(user.leftTime).isEqualTo(5000)
     }
 
     /**

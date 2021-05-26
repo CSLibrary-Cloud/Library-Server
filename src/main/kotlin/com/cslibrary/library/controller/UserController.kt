@@ -86,4 +86,11 @@ class UserController(
         return ResponseEntity
             .noContent().build()
     }
+
+    @PostMapping("/api/v1/user/time")
+    fun saveLeftTime(@RequestHeader header: HttpHeaders, @RequestBody saveLeftTime: SaveLeftTime): ResponseEntity<Unit> {
+        val userToken: String = header["X-AUTH-TOKEN"]!![0]
+        userService.userSaveLeftTime(userToken, saveLeftTime)
+        return ResponseEntity.noContent().build()
+    }
 }

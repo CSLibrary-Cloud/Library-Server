@@ -132,6 +132,13 @@ class UserService(
         // Update time on Realtime server
     }
 
+    fun userSaveLeftTime(userToken: String, userSaveLeftTime: SaveLeftTime) {
+        val user: User = findUserByToken(userToken).apply {
+            leftTime = userSaveLeftTime.leftTime
+        }
+        userRepository.addUser(user)
+    }
+
     private fun initUserTimer(user: User) {
         val defaultLetTimer: Long = 60 * 60 * 3
         user.startTime = Instant.now().epochSecond
