@@ -140,9 +140,6 @@ class UserService(
     }
 
     private fun initUserTimer(user: User) {
-        val defaultLetTimer: Long = 60 * 60 * 3
-        user.startTime = Instant.now().epochSecond
-        user.endTime = user.startTime + defaultLetTimer
-        user.leftTime = user.endTime - Instant.now().epochSecond
+        user.leftTime = 60 * 60 * 3
     }
 }
