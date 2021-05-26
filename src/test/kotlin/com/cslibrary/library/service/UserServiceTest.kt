@@ -35,10 +35,14 @@ class UserServiceTest {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    @Autowired
+    private lateinit var seatService: SeatService
+
     @Before
     @After
     fun initTest() {
         mongoTemplate.remove(Query(), User::class.java)
+        seatService.initSeats()
     }
 
     private fun initMockUser(): String {
