@@ -134,6 +134,7 @@ class UserService(
 
     fun userSaveLeftTime(userToken: String, userSaveLeftTime: SaveLeftTime) {
         val user: User = findUserByToken(userToken).apply {
+            totalStudyTime += (this.leftTime - userSaveLeftTime.leftTime)
             leftTime = userSaveLeftTime.leftTime
         }
         userRepository.addUser(user)
