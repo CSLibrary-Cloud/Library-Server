@@ -3,6 +3,7 @@ package com.cslibrary.library.service
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.UserState
+import com.cslibrary.library.data.dto.LeaderBoard
 import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
@@ -15,7 +16,6 @@ import com.cslibrary.library.security.JWTTokenProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class UserService(
@@ -138,6 +138,19 @@ class UserService(
             leftTime = userSaveLeftTime.leftTime
         }
         userRepository.addUser(user)
+    }
+
+    fun getLeaderBoard(): List<LeaderBoard> {
+        val userList: List<User> = userRepository.findAllByUserTotalTimeSort()
+        var rankCounter: Int = 1
+
+        return userList.map {
+            LeaderBoard(
+                userName = it.userName,
+                totalStudyTime = it.totalStudyTime,
+                rank = rankCounter++
+            )
+        }
     }
 
     private fun initUserTimer(user: User) {

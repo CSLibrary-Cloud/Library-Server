@@ -2,6 +2,7 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
+import com.cslibrary.library.data.dto.LeaderBoard
 import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
 import com.cslibrary.library.error.exception.ConflictException
@@ -221,6 +222,29 @@ class UserServiceTest {
         // Find
         val user: User = userRepository.findByUserId("KangDroid")
         assertThat(user.leftTime).isEqualTo(5000)
+    }
+
+    @Test
+    fun is_getLeaderBoard_works_well() {
+        userRepository.addUser(
+            User(
+                userId = "mockUserId"
+            )
+        )
+        userRepository.addUser(
+            User(
+                userName = "Test",
+                userId = "KangDroid",
+                totalStudyTime = 6000
+            )
+        )
+
+        val list: List<LeaderBoard> = userService.getLeaderBoard()
+        assertThat(list.size).isEqualTo(2)
+        assertThat(list[0].rank).isEqualTo(1)
+        assertThat(list[0].userName).isEqualTo("Test")
+        assertThat(list[1].rank).isEqualTo(2)
+        assertThat(list[1].userName).isEqualTo("")
     }
 
     /**

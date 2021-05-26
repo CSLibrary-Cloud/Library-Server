@@ -193,4 +193,24 @@ class UserRepositoryTest {
         val user: User = resultList[0]
         checkResultSameWithMockUser(user)
     }
+
+    @Test
+    fun is_findAllByUserTotalTimeSort_works_well() {
+        val tmpMockUser: User = User(
+            userId = "T3",
+            userPassword = "somewhatpassword?",
+            userName = "asdf",
+            userPhoneNumber = "010-xxxx-xxxx",
+            reservedSeatNumber = "2",
+            userState = UserState.START,
+            totalStudyTime = 6000
+        )
+        mongoTemplate.save(mockUser)
+        mongoTemplate.save(tmpMockUser)
+
+        val resultList: List<User> = userRepository.findAllByUserTotalTimeSort()
+
+        assertThat(resultList.size).isEqualTo(2)
+        assertThat(resultList[0].totalStudyTime).isEqualTo(tmpMockUser.totalStudyTime)
+    }
 }

@@ -3,7 +3,9 @@ package com.cslibrary.library.data
 import com.cslibrary.library.error.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
@@ -21,6 +23,7 @@ class UserRepository(
     private val userPhoneNumberField: String = "userPhoneNumber"
     private val userNameField: String = "userName"
     private val userIdField: String = "userId"
+    private val userTotalStudyTimeField: String = "totalStudyTime"
 
     // For finding
     private fun findOneByQuery(fieldName: String, fieldTargetValue: String): User {
@@ -73,5 +76,13 @@ class UserRepository(
 
     fun findAllByUserState(userState: UserState): List<User> {
         return findAllByQuery(userStateField, userState.name)
+    }
+
+    fun findAllByUserTotalTimeSort(): List<User> {
+        val query: Query = Query().apply {
+            with(Sort.by(Sort.Direction.DESC, userTotalStudyTimeField))
+        }
+
+        return mongoTemplate.find(query)
     }
 }
