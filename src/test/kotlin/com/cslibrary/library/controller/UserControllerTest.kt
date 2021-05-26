@@ -295,9 +295,11 @@ class UserControllerTest {
             add("X-AUTH-TOKEN", loginToken)
         }
 
-        val changeStateResponse: ResponseEntity<Void> =
+        val changeStateResponse: ResponseEntity<SaveLeftTimeResponse> =
             restTemplate.exchange(serverUrl, HttpMethod.POST, HttpEntity<SaveLeftTime>(SaveLeftTime(5000),httpHeader))
 
-        assertThat(changeStateResponse.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+        assertThat(changeStateResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(changeStateResponse.hasBody()).isEqualTo(true)
+        assertThat(changeStateResponse.body!!.leaderBoardList.size).isEqualTo(1)
     }
 }
