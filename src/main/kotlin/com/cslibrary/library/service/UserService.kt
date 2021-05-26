@@ -108,18 +108,24 @@ class UserService(
             UserState.BREAK.name -> {
                 // Stop timer
                 // If an hour passed - make them 'exit'
+                user.userState = UserState.BREAK
             }
             UserState.EXIT.name -> {
                 // Stop timer
                 // Null-fy current seat
+                user.userState = UserState.EXIT
+                seatService.removeSeat(user)
             }
             UserState.START.name -> {
                 // Restart Timer
+                user.userState = UserState.START
             }
             else -> {
                 throw NotFoundException("${stateChangeRequest.userState.toUpperCase()} is not found!")
             }
         }
+
+        userRepository.addUser(user)
     }
 
     fun userReport(reportRequest: ReportRequest, userToken: String) {

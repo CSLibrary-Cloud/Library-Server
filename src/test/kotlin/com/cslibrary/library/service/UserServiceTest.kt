@@ -2,6 +2,7 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
+import com.cslibrary.library.data.UserState
 import com.cslibrary.library.data.dto.LeaderBoard
 import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
@@ -253,9 +254,19 @@ class UserServiceTest {
     @Test
     fun is_userChangeState_works_well() {
         val loginToken: String = initMockUser()
+        userService.userReserveSeat(SeatSelectRequest(10), loginToken)
+
         userService.userChangeState(StateChangeRequest("break"), loginToken)
+        var user: User = userRepository.findByUserId("KangDroid")
+        assertThat(user.userState).isEqualTo(UserState.BREAK)
+
         userService.userChangeState(StateChangeRequest("start"), loginToken)
+        user = userRepository.findByUserId("KangDroid")
+        assertThat(user.userState).isEqualTo(UserState.START)
+
         userService.userChangeState(StateChangeRequest("exit"), loginToken)
+        user = userRepository.findByUserId("KangDroid")
+        assertThat(user.userState).isEqualTo(UserState.EXIT)
     }
 
     /**

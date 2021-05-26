@@ -39,6 +39,11 @@ class SeatService {
         return reserveSeat(user, newReserveSeatNumber)
     }
 
+    fun removeSeat(user: User) {
+        // Null-fy current seat
+        userSeatInfo[user.reservedSeatNumber.toInt()] = null
+    }
+
     private fun checkSeatOrElse(userSeatNumber: Int, onSuccess: () -> Unit) {
         if (userSeatInfo[userSeatNumber] != null) {
             // Error
