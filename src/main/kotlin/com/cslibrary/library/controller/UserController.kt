@@ -1,10 +1,7 @@
 package com.cslibrary.library.controller
 
 import com.cslibrary.library.data.dto.request.*
-import com.cslibrary.library.data.dto.response.LoginResponse
-import com.cslibrary.library.data.dto.response.RegisterResponse
-import com.cslibrary.library.data.dto.response.SeatResponse
-import com.cslibrary.library.data.dto.response.SeatSelectResponse
+import com.cslibrary.library.data.dto.response.*
 import com.cslibrary.library.service.SeatService
 import com.cslibrary.library.service.UserService
 import org.apache.coyote.Response
@@ -47,13 +44,12 @@ class UserController(
 
     // Throws ConflictException when duplicated id registered in seat service.
     @PostMapping("/api/v1/seat")
-    fun reserveSeat(@RequestHeader header: HttpHeaders, @RequestBody userSeatSelectRequest: SeatSelectRequest): ResponseEntity<SeatSelectResponse> {
+    fun reserveSeat(@RequestHeader header: HttpHeaders, @RequestBody userSeatSelectRequest: SeatSelectRequest): ResponseEntity<UserLeftTimeResponse> {
         val userToken: String = header["X-AUTH-TOKEN"]!![0]
-        val registeredSeat: Int = userService.userReserveSeat(userSeatSelectRequest, userToken)
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(SeatSelectResponse(registeredSeat))
+            .body(userService.userReserveSeat(userSeatSelectRequest, userToken))
     }
 
     @PutMapping("/api/v1/seat")

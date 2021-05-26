@@ -5,6 +5,7 @@ import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.SeatSelectRequest
 import com.cslibrary.library.data.dto.request.StateChangeRequest
+import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
 import com.cslibrary.library.error.exception.NotFoundException
@@ -186,9 +187,9 @@ class UserServiceTest {
     @Test
     fun is_userReserveSeat_works_well() {
         val loginToken: String = initMockUser()
-        val userSeatNumber: Int = userService.userReserveSeat(SeatSelectRequest(10), loginToken)
+        val userSeatNumber: UserLeftTimeResponse = userService.userReserveSeat(SeatSelectRequest(10), loginToken)
 
-        assertThat(userSeatNumber).isEqualTo(10)
+        assertThat(userSeatNumber.reservedSeat.reservedSeatNumber).isEqualTo(10)
     }
 
     @Test

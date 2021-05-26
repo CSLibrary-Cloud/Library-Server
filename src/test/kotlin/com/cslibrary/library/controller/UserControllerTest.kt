@@ -3,10 +3,7 @@ package com.cslibrary.library.controller
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.dto.request.*
-import com.cslibrary.library.data.dto.response.LoginResponse
-import com.cslibrary.library.data.dto.response.RegisterResponse
-import com.cslibrary.library.data.dto.response.SeatResponse
-import com.cslibrary.library.data.dto.response.SeatSelectResponse
+import com.cslibrary.library.data.dto.response.*
 import com.cslibrary.library.error.ErrorResponse
 import com.cslibrary.library.service.SeatService
 import org.assertj.core.api.Assertions.assertThat
@@ -205,12 +202,12 @@ class UserControllerTest {
             add("X-AUTH-TOKEN", loginToken)
         }
 
-        val seatSelectResponse: ResponseEntity<SeatSelectResponse> =
+        val seatSelectResponse: ResponseEntity<UserLeftTimeResponse> =
             restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))
 
         assertThat(seatSelectResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(seatSelectResponse.body).isNotEqualTo(null)
-        assertThat(seatSelectResponse.body!!.reservedSeatNumber).isEqualTo(5)
+        assertThat(seatSelectResponse.body!!.reservedSeat.reservedSeatNumber).isEqualTo(5)
     }
 
     @Test
@@ -220,7 +217,7 @@ class UserControllerTest {
         val httpHeader: HttpHeaders = HttpHeaders().apply {
             add("X-AUTH-TOKEN", loginToken)
         }
-        restTemplate.exchange<SeatSelectResponse>(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))
+        restTemplate.exchange<UserLeftTimeResponse>(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))
 
         val seatSelectResponse: ResponseEntity<ErrorResponse> =
             restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<SeatSelectRequest>(SeatSelectRequest(5), httpHeader))

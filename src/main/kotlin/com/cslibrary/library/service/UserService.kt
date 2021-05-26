@@ -6,6 +6,8 @@ import com.cslibrary.library.data.UserState
 import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.LoginResponse
 import com.cslibrary.library.data.dto.response.RegisterResponse
+import com.cslibrary.library.data.dto.response.SeatSelectResponse
+import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
 import com.cslibrary.library.error.exception.NotFoundException
@@ -72,7 +74,7 @@ class UserService(
         )
     }
 
-    fun userReserveSeat(seatSelectRequest: SeatSelectRequest, userToken: String): Int {
+    fun userReserveSeat(seatSelectRequest: SeatSelectRequest, userToken: String): UserLeftTimeResponse {
         val user: User = findUserByToken(userToken).apply {
             // Reserve and get Seat Number
             this.reservedSeatNumber = seatService.reserveSeat(this, seatSelectRequest.seatNumber).toString()
@@ -82,7 +84,11 @@ class UserService(
         // TODO: on this request, client need to connect websocket and get its data
 
         // Since we have Object ID Field, template will replace[update] object on DB
-        return userRepository.addUser(user).reservedSeatNumber.toInt()
+        val savedUser: User = userRepository.addUser(user)
+        return UserLeftTimeResponse(
+            reservedSeat = SeatSelectResponse(savedUser.reservedSeatNumber.toInt()),
+            leftTime = savedUser.leftTime
+        )
     }
 
     fun userChangeSeat(seatSelectRequest: SeatSelectRequest, userToken: String): Int {
