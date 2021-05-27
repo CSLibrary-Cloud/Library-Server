@@ -139,11 +139,6 @@ class UserService(
         userRepository.addUser(user)
     }
 
-    fun userExtendTime(userToken: String) {
-        val user: User = findUserByToken(userToken)
-        // Update time on Realtime server
-    }
-
     fun userSaveLeftTime(userToken: String, userSaveLeftTime: SaveLeftTime): SaveLeftTimeResponse {
         val user: User = findUserByToken(userToken).apply {
             totalStudyTime += (this.leftTime - userSaveLeftTime.leftTime)

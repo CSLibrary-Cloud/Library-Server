@@ -274,20 +274,6 @@ class UserControllerTest {
     }
 
     @Test
-    fun is_userExtendTime_works_well() {
-        val serverBaseUrl: String = "http://localhost:${port}/api/v1/extend"
-        val loginToken: String = getLoginToken()
-        val httpHeader: HttpHeaders = HttpHeaders().apply {
-            add("X-AUTH-TOKEN", loginToken)
-        }
-
-        val changeStateResponse: ResponseEntity<Void> =
-            restTemplate.exchange(serverBaseUrl, HttpMethod.POST, HttpEntity<Void>(httpHeader))
-
-        assertThat(changeStateResponse.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
-    }
-
-    @Test
     fun is_saveLeftTime_works_well() {
         val serverUrl: String = "http://localhost:${port}/api/v1/user/time"
         val loginToken: String = getLoginToken()
