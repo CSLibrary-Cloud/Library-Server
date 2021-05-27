@@ -127,8 +127,16 @@ class UserService(
     }
 
     fun userReport(reportRequest: ReportRequest, userToken: String) {
-        val user: User = findUserByToken(userToken)
-        // do stuff
+        val user: User = findUserByToken(userToken).apply {
+            userNotificationList.add(
+                UserNotification(
+                    notificationTitle = "Report Submitted",
+                    notificationMessage = "Report Submitted!"
+                )
+            )
+        }
+
+        userRepository.addUser(user)
     }
 
     fun userExtendTime(userToken: String) {
