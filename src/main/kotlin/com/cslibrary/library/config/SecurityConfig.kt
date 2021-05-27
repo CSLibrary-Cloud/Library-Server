@@ -25,7 +25,12 @@ class SecurityConfig(private val jwtTokenProvider: JWTTokenProvider) : WebSecuri
             .headers().frameOptions().disable()
             .and()
             .authorizeRequests()
-            .antMatchers("/api/v1/seat").hasRole("USER")
+            .antMatchers(
+                "/api/v1/seat",
+                "/api/v1/state",
+                "/api/v1/report",
+                "/api/v1/user/time"
+            ).hasRole("USER")
             .antMatchers("/**").permitAll()
             .and()
             .addFilterBefore(
