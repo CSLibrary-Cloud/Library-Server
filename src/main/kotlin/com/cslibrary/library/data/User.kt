@@ -24,7 +24,8 @@ data class User(
     var leftTime: Long = -1,
     var totalStudyTime: Long = 0,
     var reservedSeatNumber: String = "",
-    var userState: UserState = UserState.EXIT
+    var userState: UserState = UserState.EXIT,
+    var userNotificationList: List<UserNotification> = listOf()
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return roles.stream()

@@ -1,14 +1,12 @@
 package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
+import com.cslibrary.library.data.UserNotification
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.UserState
 import com.cslibrary.library.data.dto.LeaderBoard
 import com.cslibrary.library.data.dto.request.*
-import com.cslibrary.library.data.dto.response.LoginResponse
-import com.cslibrary.library.data.dto.response.RegisterResponse
-import com.cslibrary.library.data.dto.response.SeatSelectResponse
-import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
+import com.cslibrary.library.data.dto.response.*
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
 import com.cslibrary.library.error.exception.NotFoundException
@@ -138,12 +136,17 @@ class UserService(
         // Update time on Realtime server
     }
 
-    fun userSaveLeftTime(userToken: String, userSaveLeftTime: SaveLeftTime) {
+    fun userSaveLeftTime(userToken: String, userSaveLeftTime: SaveLeftTime): SaveLeftTimeResponse {
         val user: User = findUserByToken(userToken).apply {
             totalStudyTime += (this.leftTime - userSaveLeftTime.leftTime)
             leftTime = userSaveLeftTime.leftTime
         }
-        userRepository.addUser(user)
+        val updatedUser: User = userRepository.addUser(user)
+
+        return SaveLeftTimeResponse(
+            leaderBoardList = getLeaderBoard(),
+            userNotificationList = updatedUser.userNotificationList
+        )
     }
 
     fun getLeaderBoard(): List<LeaderBoard> {

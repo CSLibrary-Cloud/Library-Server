@@ -5,6 +5,7 @@ import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.UserState
 import com.cslibrary.library.data.dto.LeaderBoard
 import com.cslibrary.library.data.dto.request.*
+import com.cslibrary.library.data.dto.response.SaveLeftTimeResponse
 import com.cslibrary.library.data.dto.response.UserLeftTimeResponse
 import com.cslibrary.library.error.exception.ConflictException
 import com.cslibrary.library.error.exception.ForbiddenException
@@ -218,7 +219,8 @@ class UserServiceTest {
         userService.userReserveSeat(SeatSelectRequest(10), loginToken)
 
         // Do
-        userService.userSaveLeftTime(loginToken, SaveLeftTime(5000))
+        val saveTimeResponse: SaveLeftTimeResponse =
+            userService.userSaveLeftTime(loginToken, SaveLeftTime(5000))
 
         // Find
         val user: User = userRepository.findByUserId("KangDroid")
