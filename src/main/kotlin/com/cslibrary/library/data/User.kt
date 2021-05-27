@@ -25,7 +25,7 @@ data class User(
     var totalStudyTime: Long = 0,
     var reservedSeatNumber: String = "",
     var userState: UserState = UserState.EXIT,
-    var userNotificationList: List<UserNotification> = listOf()
+    var userNotificationList: MutableList<UserNotification> = mutableListOf()
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return roles.stream()
