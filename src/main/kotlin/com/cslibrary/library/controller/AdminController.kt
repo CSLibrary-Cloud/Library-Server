@@ -26,4 +26,10 @@ class AdminController(
             .status(HttpStatus.OK)
             .body(adminService.getAllReport())
     }
+
+    @DeleteMapping("/api/v1/admin/report/{reportId}")
+    fun removeUserReport(@PathVariable("reportId") customId: String): ResponseEntity<Unit> {
+        adminService.dismissReport(customId)
+        return ResponseEntity.noContent().build()
+    }
 }

@@ -4,8 +4,10 @@ import com.cslibrary.library.config.AdminConfig
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.admin.ReportData
+import com.cslibrary.library.data.admin.ReportRepository
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
+import com.cslibrary.library.data.dto.request.ReportRequest
 import com.cslibrary.library.service.PasswordEncryptorService
 import com.cslibrary.library.service.UserService
 import org.assertj.core.api.Assertions.assertThat
@@ -33,6 +35,9 @@ class AdminControllerTest {
 
     @Autowired
     private lateinit var userRepository: UserRepository
+
+    @Autowired
+    private lateinit var reportRepository: ReportRepository
 
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
@@ -148,5 +153,29 @@ class AdminControllerTest {
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.hasBody()).isEqualTo(true)
         assertThat(response.body!!.isEmpty()).isEqualTo(true)
+    }
+
+    @Test
+
+    fun is_removeUserReport_works_well() {
+        val loginToken: String = adminLoginToken()
+
+        val reportData: ReportData = ReportData(
+            reportUserId = "KangDroid",
+            reportContent = ReportRequest(
+                reportMessage = "Test Content"
+            )
+        )
+        // Insert First
+        val report: ReportData = reportRepository.addReportData(reportData)
+
+        val uri: UriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .path("/api/v1/admin/report/${reportData.reportIdentifier}")
+        val response: ResponseEntity<List<ReportData>> =
+            restTemplate.exchange(
+                uri.toUriString(), HttpMethod.DELETE, HttpEntity<Unit>(getHttpHeader(loginToken))
+            )
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
     }
 }
