@@ -45,4 +45,21 @@ class ReportRepositoryTest {
         assertThat(reportList[0].reportContent.reportMessage).isEqualTo(reportData.reportContent.reportMessage)
     }
 
+    @Test
+    fun is_findAll_works_well() {
+        val reportData: ReportData = ReportData(
+            reportUserId = "KangDroid",
+            reportContent = ReportRequest(
+                reportMessage = "Test Content"
+            )
+        )
+        // Insert First
+        val report: ReportData = reportRepository.addReportData(reportData)
+
+        // Find Value
+        val reportList: List<ReportData> = reportRepository.findAllReportData()
+        assertThat(reportList.size).isEqualTo(1)
+        assertThat(reportList[0].reportContent.reportMessage).isEqualTo(reportData.reportContent.reportMessage)
+    }
+
 }

@@ -4,6 +4,7 @@ import com.cslibrary.library.error.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.findAll
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 
@@ -46,4 +47,6 @@ open class CommonRepository(
     protected inline fun<reified T> addOrUpdateEntity(entity: T): T {
         return mongoTemplate.save(entity!!)
     }
+
+    protected inline fun<reified T> findAll(): List<T> = mongoTemplate.findAll()
 }

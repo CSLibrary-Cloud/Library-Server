@@ -2,6 +2,7 @@ package com.cslibrary.library.data.admin
 
 import com.cslibrary.library.data.CommonRepository
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.findAll
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -12,6 +13,8 @@ class ReportRepository(
     private val reportUserIdField: String = "reportUserId"
     private val reportContentField: String = "reportContent"
     private val isReportHandlingDoneField: String = "isReportHandlingDone"
+
+    fun findAllReportData(): List<ReportData> = findAll()
 
     fun findByReporterId(targetId: String): List<ReportData> {
         return findAllByQuery(reportUserIdField, targetId)
