@@ -1,0 +1,65 @@
+package com.cslibrary.library.service
+
+import com.cslibrary.library.data.User
+import com.cslibrary.library.data.admin.ReportData
+import com.cslibrary.library.data.dto.request.RegisterRequest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Query
+import org.springframework.test.context.junit4.SpringRunner
+
+@RunWith(SpringRunner::class)
+@SpringBootTest
+class AdminServiceTest {
+    @Autowired
+    private lateinit var adminService: AdminService
+
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
+
+    @Autowired
+    private lateinit var userService: UserService
+
+    @Before
+    @After
+    fun initTest() {
+        mongoTemplate.remove(Query(), ReportData::class.java)
+        mongoTemplate.remove(Query(), User::class.java)
+    }
+
+    @Test
+    fun is_banUser_works_well() {
+        userService.registerUser(
+            RegisterRequest(
+                userId = "KangDroid",
+                userPassword = "test"
+            )
+        )
+
+        val response: User = adminService.banUser("KangDroid")
+
+        assertThat(response.userNonBanned).isEqualTo(false)
+        assertThat(response.isAccountNonLocked).isEqualTo(false)
+    }
+
+    @Test
+    fun is_unbanUser_works_well() {
+        userService.registerUser(
+            RegisterRequest(
+                userId = "KangDroid",
+                userPassword = "test"
+            )
+        )
+
+        val response: User = adminService.unbanUser("KangDroid")
+
+        assertThat(response.userNonBanned).isEqualTo(true)
+        assertThat(response.isAccountNonLocked).isEqualTo(true)
+    }
+}

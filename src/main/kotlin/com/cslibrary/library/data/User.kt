@@ -25,7 +25,8 @@ data class User(
     var totalStudyTime: Long = 0,
     var reservedSeatNumber: String = "",
     var userState: UserState = UserState.EXIT,
-    var userNotificationList: MutableList<UserNotification> = mutableListOf()
+    var userNotificationList: MutableList<UserNotification> = mutableListOf(),
+    var userNonBanned: Boolean = true
 ): UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return roles.stream()
@@ -40,7 +41,7 @@ data class User(
     override fun getPassword() = userPassword
     override fun getUsername(): String = userName
     override fun isAccountNonExpired(): Boolean = true
-    override fun isAccountNonLocked(): Boolean = true
+    override fun isAccountNonLocked(): Boolean = userNonBanned
     override fun isCredentialsNonExpired(): Boolean = true
     override fun isEnabled(): Boolean = true
 }
