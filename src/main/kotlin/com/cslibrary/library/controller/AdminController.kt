@@ -1,6 +1,7 @@
 package com.cslibrary.library.controller
 
 import com.cslibrary.library.data.admin.ReportData
+import com.cslibrary.library.data.dto.request.NotifyUserRequest
 import com.cslibrary.library.data.dto.response.SealedUser
 import com.cslibrary.library.service.AdminService
 import org.springframework.http.HttpStatus
@@ -39,5 +40,11 @@ class AdminController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(adminService.getAllUser())
+    }
+
+    @PostMapping("/api/v1/admin/user/notification")
+    fun postNotificationToUser(@RequestBody notifyUserRequest: NotifyUserRequest): ResponseEntity<Unit> {
+        adminService.notifyUser(notifyUserRequest)
+        return ResponseEntity.noContent().build()
     }
 }

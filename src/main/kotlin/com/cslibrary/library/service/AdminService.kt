@@ -4,6 +4,7 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.admin.ReportData
 import com.cslibrary.library.data.admin.ReportRepository
+import com.cslibrary.library.data.dto.request.NotifyUserRequest
 import com.cslibrary.library.data.dto.response.SealedUser
 import org.springframework.stereotype.Service
 
@@ -45,5 +46,12 @@ class AdminService(
             totalStudyTime = it.totalStudyTime,
             reservedSeatNumber = it.reservedSeatNumber
         )
+    }
+
+    fun notifyUser(notifyUserRequest: NotifyUserRequest) {
+        val user: User = userRepository.findByUserId(notifyUserRequest.userId).apply {
+            userNotificationList.add(notifyUserRequest.userNotification)
+        }
+        userRepository.addUser(user)
     }
 }

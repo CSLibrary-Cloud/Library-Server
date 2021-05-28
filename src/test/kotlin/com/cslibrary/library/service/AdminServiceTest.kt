@@ -1,8 +1,11 @@
 package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
+import com.cslibrary.library.data.UserNotification
+import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.admin.ReportData
 import com.cslibrary.library.data.admin.ReportRepository
+import com.cslibrary.library.data.dto.request.NotifyUserRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.ReportRequest
 import com.cslibrary.library.data.dto.response.SealedUser
@@ -28,6 +31,9 @@ class AdminServiceTest {
 
     @Autowired
     private lateinit var userService: UserService
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
     @Autowired
     private lateinit var reportRepository: ReportRepository
@@ -104,5 +110,32 @@ class AdminServiceTest {
         assertThat(userEmptyList.isEmpty()).isEqualTo(false)
         assertThat(userEmptyList.size).isEqualTo(1)
         assertThat(userEmptyList[0].userId).isEqualTo("KangDroid")
+    }
+
+    @Test
+    fun is_notifyUser_works_well() {
+        val mockUserNotification: UserNotification = UserNotification(
+            notificationTitle = "Test Title",
+            notificationMessage = "Test Content"
+        )
+
+        userService.registerUser(
+            RegisterRequest(
+                userId = "KangDroid",
+                userPassword = "test"
+            )
+        )
+
+        adminService.notifyUser(
+            NotifyUserRequest(
+                userId = "KangDroid",
+                userNotification = mockUserNotification
+            )
+        )
+
+        val user: User = userRepository.findByUserId("KangDroid")
+        assertThat(user.userNotificationList.isEmpty()).isEqualTo(false)
+        assertThat(user.userNotificationList[0].notificationTitle).isEqualTo(mockUserNotification.notificationTitle)
+        assertThat(user.userNotificationList[0].notificationMessage).isEqualTo(mockUserNotification.notificationMessage)
     }
 }

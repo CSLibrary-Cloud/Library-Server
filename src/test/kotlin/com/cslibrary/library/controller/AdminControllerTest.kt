@@ -2,10 +2,12 @@ package com.cslibrary.library.controller
 
 import com.cslibrary.library.config.AdminConfig
 import com.cslibrary.library.data.User
+import com.cslibrary.library.data.UserNotification
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.admin.ReportData
 import com.cslibrary.library.data.admin.ReportRepository
 import com.cslibrary.library.data.dto.request.LoginRequest
+import com.cslibrary.library.data.dto.request.NotifyUserRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.ReportRequest
 import com.cslibrary.library.data.dto.response.SealedUser
@@ -191,5 +193,29 @@ class AdminControllerTest {
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.hasBody()).isEqualTo(true)
         assertThat(response.body!!.size).isEqualTo(1) // User Added
+    }
+
+    @Test
+    fun is_postNotificationToUser_works_well() {val mockUserNotification: UserNotification = UserNotification(
+        notificationTitle = "Test Title",
+        notificationMessage = "Test Content"
+    )
+
+        userService.registerUser(
+            RegisterRequest(
+                userId = "KangDroid",
+                userPassword = "test"
+            )
+        )
+        val loginToken: String = adminLoginToken()
+        val uri: UriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .path("/api/v1/admin/user/notification")
+        val response: ResponseEntity<Unit> =
+            restTemplate.exchange(uri.toUriString(), HttpMethod.POST, HttpEntity<NotifyUserRequest>(NotifyUserRequest(
+                userId = "KangDroid",
+                userNotification = mockUserNotification
+            ), getHttpHeader(loginToken)))
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
     }
 }
