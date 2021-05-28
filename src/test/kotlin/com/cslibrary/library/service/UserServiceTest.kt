@@ -51,8 +51,8 @@ class UserServiceTest {
     private fun initMockUser(): String {
         // Before starting, add mock user first
         val mockUserId: String = "KangDroid"
-        mongoTemplate.save(
-            User(
+        userService.registerUser(
+            RegisterRequest(
                 userId = mockUserId
             )
         )
@@ -139,9 +139,9 @@ class UserServiceTest {
                 )
             )
         }.onSuccess {
-            fail("Password should be wrong, but succeeds?")
+            fail("Password should be wrong, but succeeds? ${it.userToken}")
         }.onFailure {
-            println(it.stackTraceToString())
+            println("Error: ${it.stackTraceToString()}")
             assertThat(it is ForbiddenException).isEqualTo(true)
             assertThat(it.message).isEqualTo("Password is wrong!")
         }
@@ -150,16 +150,18 @@ class UserServiceTest {
     @Test
     fun is_loginUser_works_well() {
         val mockUserId: String = "KangDroid"
-        mongoTemplate.save(
-            User(
-                userId = mockUserId
+        userService.registerUser(
+            RegisterRequest(
+                userId = mockUserId,
+                userPassword = "test"
             )
         )
 
         runCatching {
             userService.loginUser(
                 LoginRequest(
-                    userId = mockUserId
+                    userId = mockUserId,
+                    userPassword = "test"
                 )
             )
         }.onSuccess {

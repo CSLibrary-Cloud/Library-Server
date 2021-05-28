@@ -42,18 +42,20 @@ class UserControllerTest {
 
     private fun getLoginToken(): String {
         val serverBaseUrl: String = "http://localhost:${port}"
-        val mockUser: User = RegisterRequest(
+        val mockUser: RegisterRequest = RegisterRequest(
             userId = "kangdroid",
             userPassword = "test",
             userName = "testingname",
             userPhoneNumber = "whatever"
-        ).toUser()
+        )
+
+        val registerResponse: ResponseEntity<RegisterResponse> =
+            restTemplate.postForEntity("${serverBaseUrl}/api/v1/user", mockUser)
 
         val mockLoginRequest: LoginRequest = LoginRequest(
             userId = mockUser.userId,
             userPassword = mockUser.userPassword
         )
-        userRepository.addUser(mockUser)
 
         val loginResponse: ResponseEntity<LoginResponse> =
             restTemplate.postForEntity("${serverBaseUrl}/api/v1/login", mockLoginRequest)
@@ -79,6 +81,9 @@ class UserControllerTest {
         )
         val registerResponse: ResponseEntity<RegisterResponse> =
             restTemplate.postForEntity("${serverBaseUrl}/api/v1/user", mockUserRegisterRequest)
+
+        val userEntity: User = userRepository.findByUserId(mockUserRegisterRequest.userId)
+        assertThat(userEntity.userPassword).isNotEqualTo(mockUserRegisterRequest.userPassword)
 
         assertThat(registerResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(registerResponse.hasBody()).isEqualTo(true)
@@ -109,17 +114,20 @@ class UserControllerTest {
     @Test
     fun is_loginUserWorksWell() {
         val serverBaseUrl: String = "http://localhost:${port}"
-        val mockUser: User = User(
+
+        val mockUserRegisterRequest: RegisterRequest = RegisterRequest(
             userId = "kangdroid",
             userPassword = "test",
             userName = "testingname",
             userPhoneNumber = "whatever"
         )
+        val registerResponse: ResponseEntity<RegisterResponse> =
+            restTemplate.postForEntity("${serverBaseUrl}/api/v1/user", mockUserRegisterRequest)
+
         val mockLoginRequest: LoginRequest = LoginRequest(
-            userId = mockUser.userId,
-            userPassword = mockUser.userPassword
+            userId = mockUserRegisterRequest.userId,
+            userPassword = mockUserRegisterRequest.userPassword
         )
-        userRepository.addUser(mockUser)
 
         val loginResponse: ResponseEntity<LoginResponse> =
             restTemplate.postForEntity("${serverBaseUrl}/api/v1/login", mockLoginRequest)

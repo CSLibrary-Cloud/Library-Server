@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service
 class UserService(
     private val userRepository: UserRepository,
     private val jwtTokenProvider: JWTTokenProvider,
-    private val seatService: SeatService
+    private val seatService: SeatService,
+    private val passwordEncryptorService: PasswordEncryptorService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -52,7 +53,9 @@ class UserService(
 
         // Register!
         val responseUser: User = userRepository.addUser(
-            registerRequest.toUser()
+            registerRequest.toUser().apply {
+                userPassword = passwordEncryptorService.encodePlainText(userPassword)
+            }
         )
 
         return RegisterResponse(
@@ -63,7 +66,7 @@ class UserService(
     fun loginUser(loginRequest: LoginRequest): LoginResponse {
         val requestedUser: User = userRepository.findByUserId(loginRequest.userId)
 
-        if (requestedUser.userPassword != loginRequest.userPassword) {
+        if (!passwordEncryptorService.isMatching(loginRequest.userPassword, requestedUser.userPassword)) {
             throw ForbiddenException("Password is wrong!")
         }
 
