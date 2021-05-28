@@ -28,4 +28,8 @@ class AdminService(
     }
 
     fun getAllReport(): List<ReportData> = reportRepository.findAllReportData()
+
+    fun dismissReport(customId: String) {
+        reportRepository.deleteByCustomId(customId)
+    }
 }

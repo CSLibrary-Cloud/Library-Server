@@ -2,7 +2,9 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.admin.ReportData
+import com.cslibrary.library.data.admin.ReportRepository
 import com.cslibrary.library.data.dto.request.RegisterRequest
+import com.cslibrary.library.data.dto.request.ReportRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -25,6 +27,9 @@ class AdminServiceTest {
 
     @Autowired
     private lateinit var userService: UserService
+
+    @Autowired
+    private lateinit var reportRepository: ReportRepository
 
     @Before
     @After
@@ -67,5 +72,22 @@ class AdminServiceTest {
     fun is_getAllReport_works_well() {
         val response: List<ReportData> = adminService.getAllReport()
         assertThat(response.isEmpty()).isEqualTo(true)
+    }
+
+    @Test
+    fun is_dismissReport_works_well() {
+        val reportData: ReportData = ReportData(
+            reportUserId = "KangDroid",
+            reportContent = ReportRequest(
+                reportMessage = "Test Content"
+            )
+        )
+        // Insert First
+        val report: ReportData = reportRepository.addReportData(reportData)
+
+        adminService.dismissReport(report.reportIdentifier)
+
+        assertThat(reportRepository.findAllReportData().isEmpty()).isEqualTo(true)
+
     }
 }
