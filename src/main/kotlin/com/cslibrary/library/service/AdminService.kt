@@ -2,6 +2,7 @@ package com.cslibrary.library.service
 
 import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserRepository
+import com.cslibrary.library.data.admin.ReportData
 import com.cslibrary.library.data.admin.ReportRepository
 import org.springframework.stereotype.Service
 
@@ -25,4 +26,6 @@ class AdminService(
 
         return userRepository.addUser(user)
     }
+
+    fun getAllReport(): List<ReportData> = reportRepository.findAllReportData()
 }

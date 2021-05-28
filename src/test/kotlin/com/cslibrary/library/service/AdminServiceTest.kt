@@ -62,4 +62,10 @@ class AdminServiceTest {
         assertThat(response.userNonBanned).isEqualTo(true)
         assertThat(response.isAccountNonLocked).isEqualTo(true)
     }
+
+    @Test
+    fun is_getAllReport_works_well() {
+        val response: List<ReportData> = adminService.getAllReport()
+        assertThat(response.isEmpty()).isEqualTo(true)
+    }
 }
