@@ -53,7 +53,8 @@ tasks.jacocoTestCoverageVerification {
 				"com.cslibrary.library.data.dto.*",
 				"com.cslibrary.library.security.*",
 				"com.cslibrary.library.error.*",
-				"com.cslibrary.library.data.UserNotification"
+				"com.cslibrary.library.data.UserNotification",
+				"com.cslibrary.library.data.admin.ReportData"
 			)
 		}
 	}
