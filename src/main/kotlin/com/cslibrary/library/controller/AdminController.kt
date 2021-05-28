@@ -1,11 +1,10 @@
 package com.cslibrary.library.controller
 
+import com.cslibrary.library.data.admin.ReportData
 import com.cslibrary.library.service.AdminService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class AdminController(
@@ -19,5 +18,12 @@ class AdminController(
             adminService.unbanUser(userId)
         }
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/api/v1/admin/report")
+    fun getUserReport(): ResponseEntity<List<ReportData>> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(adminService.getAllReport())
     }
 }

@@ -132,4 +132,21 @@ class AdminControllerTest {
         val user: User = userRepository.findByUserId(mockUserRequest.userId)
         assertThat(user.userNonBanned).isEqualTo(true)
     }
+
+    @Test
+
+    fun is_gettingUserReport_works_well() {
+        val loginToken: String = adminLoginToken()
+
+        val uri: UriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .path("/api/v1/admin/report")
+        val response: ResponseEntity<List<ReportData>> =
+            restTemplate.exchange(
+                uri.toUriString(), HttpMethod.GET, HttpEntity<Unit>(getHttpHeader(loginToken))
+            )
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.hasBody()).isEqualTo(true)
+        assertThat(response.body!!.isEmpty()).isEqualTo(true)
+    }
 }
