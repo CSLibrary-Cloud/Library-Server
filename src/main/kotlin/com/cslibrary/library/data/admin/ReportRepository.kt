@@ -11,6 +11,7 @@ class ReportRepository(
 ) : CommonRepository(mongoTemplate) {
     // Field
     private val reportUserIdField: String = "reportUserId"
+    private val reportIdentifierField: String = "reportIdentifier"
     private val reportContentField: String = "reportContent"
     private val isReportHandlingDoneField: String = "isReportHandlingDone"
 
@@ -18,6 +19,10 @@ class ReportRepository(
 
     fun findByReporterId(targetId: String): List<ReportData> {
         return findAllByQuery(reportUserIdField, targetId)
+    }
+
+    fun findByReportIdentifier(targetIdentifier: String): ReportData {
+        return findOneByQuery(reportIdentifierField, targetIdentifier)
     }
 
     fun addReportData(reportData: ReportData): ReportData {

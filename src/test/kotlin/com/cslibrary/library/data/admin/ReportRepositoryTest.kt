@@ -62,4 +62,25 @@ class ReportRepositoryTest {
         assertThat(reportList[0].reportContent.reportMessage).isEqualTo(reportData.reportContent.reportMessage)
     }
 
+    @Test
+    fun is_findByReportIdentifier_works_well() {
+        val reportData: ReportData = ReportData(
+            reportUserId = "KangDroid",
+            reportContent = ReportRequest(
+                reportMessage = "Test Content"
+            )
+        )
+
+        // Mid-Check
+        assertThat(reportData.reportIdentifier).isNotEqualTo("")
+
+        // Insert First
+        val report: ReportData = reportRepository.addReportData(reportData)
+
+        // Find
+        val reportFound: ReportData = reportRepository.findByReportIdentifier(reportData.reportIdentifier)
+
+        assertThat(reportFound.reportIdentifier).isEqualTo(reportData.reportIdentifier)
+    }
+
 }
