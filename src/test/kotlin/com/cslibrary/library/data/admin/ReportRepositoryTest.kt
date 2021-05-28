@@ -1,6 +1,5 @@
 package com.cslibrary.library.data.admin
 
-import com.cslibrary.library.data.User
 import com.cslibrary.library.data.dto.request.ReportRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
@@ -81,6 +80,26 @@ class ReportRepositoryTest {
         val reportFound: ReportData = reportRepository.findByReportIdentifier(reportData.reportIdentifier)
 
         assertThat(reportFound.reportIdentifier).isEqualTo(reportData.reportIdentifier)
+    }
+
+    @Test
+    fun is_deleteByCustomId_works_well() {
+        val reportData: ReportData = ReportData(
+            reportUserId = "KangDroid",
+            reportContent = ReportRequest(
+                reportMessage = "Test Content"
+            )
+        )
+
+        // Insert First
+        val report: ReportData = reportRepository.addReportData(reportData)
+
+        // Remove
+        reportRepository.deleteByCustomId(reportData.reportIdentifier)
+
+        val reportList: List<ReportData> = reportRepository.findAllReportData()
+
+        assertThat(reportList.isEmpty()).isEqualTo(true)
     }
 
 }

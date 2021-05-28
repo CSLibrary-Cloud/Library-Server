@@ -25,6 +25,10 @@ class ReportRepository(
         return findOneByQuery(reportIdentifierField, targetIdentifier)
     }
 
+    fun deleteByCustomId(targetIdentifier: String) {
+        deleteByField<ReportData>(reportIdentifierField, targetIdentifier)
+    }
+
     fun addReportData(reportData: ReportData): ReportData {
         return addOrUpdateEntity(reportData)
     }

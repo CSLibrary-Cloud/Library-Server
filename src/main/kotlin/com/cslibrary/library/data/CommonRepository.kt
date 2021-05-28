@@ -49,4 +49,14 @@ open class CommonRepository(
     }
 
     protected inline fun<reified T> findAll(): List<T> = mongoTemplate.findAll()
+
+    protected inline fun<reified T> deleteByField(fieldName: String, fieldTargetValue: String) {
+        val query: Query = Query().apply {
+            addCriteria(
+                Criteria.where(fieldName).`is`(fieldTargetValue)
+            )
+        }
+
+        mongoTemplate.remove(query, T::class.java)
+    }
 }
