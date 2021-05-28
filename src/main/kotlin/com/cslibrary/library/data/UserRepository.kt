@@ -1,21 +1,19 @@
 package com.cslibrary.library.data
 
-import com.cslibrary.library.error.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
-import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
 
 @Repository
 class UserRepository(
-    private val mongoTemplate: MongoTemplate // DI Injection
-) {
+    mongoTemplate: MongoTemplate // DI Injection
+): CommonRepository(mongoTemplate) {
     // Logger
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    override val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     // Field - TODO: Probably we can use Java/Kotlin Reflection to get this?
     private val userStateField: String = "userState"
@@ -25,37 +23,9 @@ class UserRepository(
     private val userIdField: String = "userId"
     private val userTotalStudyTimeField: String = "totalStudyTime"
 
-    // For finding
-    private fun findOneByQuery(fieldName: String, fieldTargetValue: String): User {
-        // Create MongoDB Query
-        val query: Query = Query().apply {
-            addCriteria(
-                Criteria.where(fieldName).`is`(fieldTargetValue)
-            )
-        }
-
-        // Find it
-        return mongoTemplate.findOne(query, User::class.java) ?: run {
-            logger.error("User Data is is not found!")
-            logger.error("Query: $query")
-            throw NotFoundException("Userdata is not found!")
-        }
-    }
-
-    private fun findAllByQuery(fieldName: String, fieldTargetValue: String): List<User> {
-        // Create MongoDB Query
-        val query: Query = Query().apply {
-            addCriteria(
-                Criteria.where(fieldName).`is`(fieldTargetValue)
-            )
-        }
-
-        // Find it
-        return mongoTemplate.find(query, User::class.java)
-    }
-
+    // Compatibility function
     fun addUser(user: User): User {
-        return mongoTemplate.save(user)
+        return addOrUpdateEntity(user)
     }
 
     fun findByUserId(userId: String): User {
