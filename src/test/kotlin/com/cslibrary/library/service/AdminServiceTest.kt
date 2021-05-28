@@ -5,6 +5,7 @@ import com.cslibrary.library.data.admin.ReportData
 import com.cslibrary.library.data.admin.ReportRepository
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.ReportRequest
+import com.cslibrary.library.data.dto.response.SealedUser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -89,5 +90,19 @@ class AdminServiceTest {
 
         assertThat(reportRepository.findAllReportData().isEmpty()).isEqualTo(true)
 
+    }
+
+    @Test
+    fun is_getAllUser_works_well() {
+        userService.registerUser(
+            RegisterRequest(
+                userId = "KangDroid",
+                userPassword = "test"
+            )
+        )
+        val userEmptyList: List<SealedUser> = adminService.getAllUser()
+        assertThat(userEmptyList.isEmpty()).isEqualTo(false)
+        assertThat(userEmptyList.size).isEqualTo(1)
+        assertThat(userEmptyList[0].userId).isEqualTo("KangDroid")
     }
 }

@@ -8,6 +8,7 @@ import com.cslibrary.library.data.admin.ReportRepository
 import com.cslibrary.library.data.dto.request.LoginRequest
 import com.cslibrary.library.data.dto.request.RegisterRequest
 import com.cslibrary.library.data.dto.request.ReportRequest
+import com.cslibrary.library.data.dto.response.SealedUser
 import com.cslibrary.library.service.PasswordEncryptorService
 import com.cslibrary.library.service.UserService
 import org.assertj.core.api.Assertions.assertThat
@@ -177,5 +178,18 @@ class AdminControllerTest {
             )
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+    }
+
+    @Test
+    fun is_getUserInformation_works_well() {
+        val loginToken: String = adminLoginToken()
+        val uri: UriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .path("/api/v1/admin/user")
+
+        val response: ResponseEntity<List<SealedUser>> =
+            restTemplate.exchange(uri.toUriString(), HttpMethod.GET, HttpEntity<Unit>(getHttpHeader(loginToken)))
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.hasBody()).isEqualTo(true)
+        assertThat(response.body!!.size).isEqualTo(1) // User Added
     }
 }

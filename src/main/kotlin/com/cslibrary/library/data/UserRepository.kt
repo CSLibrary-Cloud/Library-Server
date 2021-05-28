@@ -55,4 +55,6 @@ class UserRepository(
 
         return mongoTemplate.find(query)
     }
+
+    fun findAllUser(): List<User> = findAll()
 }
