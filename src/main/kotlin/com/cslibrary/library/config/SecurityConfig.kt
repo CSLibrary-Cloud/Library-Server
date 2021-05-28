@@ -31,6 +31,9 @@ class SecurityConfig(private val jwtTokenProvider: JWTTokenProvider) : WebSecuri
                 "/api/v1/report",
                 "/api/v1/user/time"
             ).hasRole("USER")
+            .antMatchers(
+                "/api/v1/admin/**"
+            ).hasRole("ADMIN")
             .antMatchers("/**").permitAll()
             .and()
             .addFilterBefore(
