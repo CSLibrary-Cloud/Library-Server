@@ -4,6 +4,8 @@ import com.cslibrary.library.data.User
 import com.cslibrary.library.data.UserNotification
 import com.cslibrary.library.data.UserRepository
 import com.cslibrary.library.data.UserState
+import com.cslibrary.library.data.admin.ReportData
+import com.cslibrary.library.data.admin.ReportRepository
 import com.cslibrary.library.data.dto.LeaderBoard
 import com.cslibrary.library.data.dto.request.*
 import com.cslibrary.library.data.dto.response.*
@@ -20,7 +22,8 @@ class UserService(
     private val userRepository: UserRepository,
     private val jwtTokenProvider: JWTTokenProvider,
     private val seatService: SeatService,
-    private val passwordEncryptorService: PasswordEncryptorService
+    private val passwordEncryptorService: PasswordEncryptorService,
+    private val reportRepository: ReportRepository
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -138,6 +141,13 @@ class UserService(
                 )
             )
         }
+
+        reportRepository.addReportData(
+            ReportData(
+                reportUserId = user.userId,
+                reportContent = reportRequest
+            )
+        )
 
         userRepository.addUser(user)
     }
