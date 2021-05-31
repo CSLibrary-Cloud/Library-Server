@@ -35,7 +35,9 @@ class AdminService(
         reportRepository.deleteByCustomId(customId)
     }
 
-    fun getAllUser(): List<SealedUser> = userRepository.findAllUser().map {
+    fun getAllUser(): List<SealedUser> = userRepository.findAllUser().filter {
+        (it.userId != "admin")
+    }.map {
         SealedUser(
             userId = it.userId,
             userName = it.userName,

@@ -192,7 +192,7 @@ class AdminControllerTest {
             restTemplate.exchange(uri.toUriString(), HttpMethod.GET, HttpEntity<Unit>(getHttpHeader(loginToken)))
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.hasBody()).isEqualTo(true)
-        assertThat(response.body!!.size).isEqualTo(1) // User Added
+        assertThat(response.body!!.size).isEqualTo(0) // User Added
     }
 
     @Test
