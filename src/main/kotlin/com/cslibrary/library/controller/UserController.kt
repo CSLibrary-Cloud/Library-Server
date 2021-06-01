@@ -5,6 +5,8 @@ import com.cslibrary.library.data.dto.response.*
 import com.cslibrary.library.service.SeatService
 import com.cslibrary.library.service.UserService
 import org.apache.coyote.Response
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,6 +17,7 @@ class UserController(
     private val userService: UserService,
     private val seatService: SeatService
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     // Throws: ConflictException when Duplicated UserID Exists
     @PostMapping("/api/v1/user")
     fun registerUser(@RequestBody registerRequest: RegisterRequest): ResponseEntity<RegisterResponse> {
@@ -46,6 +49,8 @@ class UserController(
     @PostMapping("/api/v1/seat")
     fun reserveSeat(@RequestHeader header: HttpHeaders, @RequestBody userSeatSelectRequest: SeatSelectRequest): ResponseEntity<UserLeftTimeResponse> {
         val userToken: String = header["X-AUTH-TOKEN"]!![0]
+
+        logger.info("User requested seat reservation: ${userSeatSelectRequest.seatNumber}")
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -81,6 +86,7 @@ class UserController(
 
     @PostMapping("/api/v1/user/time")
     fun saveLeftTime(@RequestHeader header: HttpHeaders, @RequestBody saveLeftTime: SaveLeftTime): ResponseEntity<SaveLeftTimeResponse> {
+        logger.info("User requested to save left time: ${saveLeftTime.leftTime}")
         val userToken: String = header["X-AUTH-TOKEN"]!![0]
 
         return ResponseEntity

@@ -50,25 +50,25 @@ class AdminConfig(
                 userNotificationList = mutableListOf()
             )
         )
-
-        userRepository.addUser(
-            User(
-                userId = "whatever",
-                userPassword = passwordEncryptorService.encodePlainText(masterPassword),
-                userName = "kangdroid",
-                userPhoneNumber = "",
-                roles = setOf("ROLE_USER"),
-                userNotificationList = mutableListOf()
-            )
-        )
-
-        reportRepository.addReportData(
-            ReportData(
-                reportUserId = "kangdroid",
-                reportContent = ReportRequest(
-                    "whatever guy is being too loud!"
-                )
-            )
-        )
+//
+//        userRepository.addUser(
+//            User(
+//                userId = "whatever",
+//                userPassword = passwordEncryptorService.encodePlainText(masterPassword),
+//                userName = "kangdroid",
+//                userPhoneNumber = "",
+//                roles = setOf("ROLE_USER"),
+//                userNotificationList = mutableListOf()
+//            )
+//        )
+//
+//        reportRepository.addReportData(
+//            ReportData(
+//                reportUserId = "kangdroid",
+//                reportContent = ReportRequest(
+//                    "whatever guy is being too loud!"
+//                )
+//            )
+//        )
     }
 }
