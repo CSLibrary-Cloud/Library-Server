@@ -95,4 +95,12 @@ class UserController(
                 userService.userSaveLeftTime(userToken, saveLeftTime)
             )
     }
+
+    @PostMapping("/api/v1/user/time/extend")
+    fun extendTime(@RequestHeader httpHeaders: HttpHeaders, @RequestBody extendTimeRequest: ExtendTimeRequest): ResponseEntity<ExtendTimeResponse> {
+        val userToken: String = httpHeaders["X-AUTH-TOKEN"]!![0]
+        return ResponseEntity.ok(
+            userService.extendUserTime(userToken, extendTimeRequest.leftTime)
+        )
+    }
 }

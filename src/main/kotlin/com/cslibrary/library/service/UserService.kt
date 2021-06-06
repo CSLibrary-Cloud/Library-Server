@@ -154,7 +154,7 @@ class UserService(
 
     fun userSaveLeftTime(userToken: String, userSaveLeftTime: SaveLeftTime): SaveLeftTimeResponse {
         val user: User = findUserByToken(userToken).apply {
-            totalStudyTime += 5
+            totalStudyTime += (leftTime - userSaveLeftTime.leftTime)
             leftTime = userSaveLeftTime.leftTime
         }
         val updatedUser: User = userRepository.addUser(user)
@@ -176,6 +176,16 @@ class UserService(
                 rank = rankCounter++
             )
         }
+    }
+
+    fun extendUserTime(userToken: String, currentTime: Long): ExtendTimeResponse {
+        val user: User = findUserByToken(userToken).apply {
+            leftTime = (currentTime + (60 * 60))
+        }
+
+        return ExtendTimeResponse(
+            updatedLeftTime = userRepository.addUser(user).leftTime
+        )
     }
 
     private fun initUserTimer(user: User) {

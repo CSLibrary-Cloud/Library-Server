@@ -39,17 +39,6 @@ class AdminConfig(
                 roles = setOf("ROLE_ADMIN")
             )
         )
-
-        userRepository.addUser(
-            User(
-                userId = "kangdroid",
-                userPassword = passwordEncryptorService.encodePlainText(masterPassword),
-                userName = "kangdroid",
-                userPhoneNumber = "",
-                roles = setOf("ROLE_USER"),
-                userNotificationList = mutableListOf()
-            )
-        )
 //
 //        userRepository.addUser(
 //            User(
